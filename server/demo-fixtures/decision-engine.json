@@ -1,0 +1,169 @@
+{
+  "generated_at": "2026-06-19T19:00:56.149Z",
+  "model": "gemini-2.5-flash",
+  "raw_decision": {
+    "trigger": {
+      "type": "user_request",
+      "ref_ids": []
+    },
+    "observation": "Multiple critical and high-severity findings indicate a severe attack path targeting the FinOps AI agent and its associated AWS infrastructure. An OpenAI API key is directly exposed in the `orbital/finops-ai-agent` repository, and the `bedrock-finops-execution-role` has overly permissive access to Bedrock, Secrets Manager, and S3 with wildcard actions. This combination creates a high-impact vulnerability.",
+    "reasoning": "The exposed OpenAI API key (`ai-spm:ai-secret-in-source`, `ai-spm:ai-system-near-secret`) provides an immediate entry point for an attacker. This initial compromise can be escalated by leveraging the `bedrock-finops-execution-role` (`ai-spm:iam-bedrock-secrets-s3-combo`, `ai-spm:iam-ai-role-wildcard`), which grants broad, unconstrained access to critical AWS services. If the FinOps agent or related Bedrock payout agent (`ai-spm:bedrock-agent-action-groups`) operates under this role, an attacker could exfiltrate sensitive data from S3, access secrets, and perform unauthorized actions via Bedrock agent action groups, leading to significant financial or data integrity impact.",
+    "evidence": [
+      "ai-spm:ai-secret-in-source:asset:finops-credential",
+      "ai-spm:ai-system-near-secret:asset:finops-agent-runtime",
+      "ai-spm:iam-bedrock-secrets-s3-combo:asset:aws-bedrock-service-role",
+      "ai-spm:iam-ai-role-wildcard:asset:aws-bedrock-service-role",
+      "ai-spm:bedrock-agent-action-groups:asset:aws-bedrock-payout-agent"
+    ],
+    "confidence": 98,
+    "blast_radius": "critical",
+    "expected_outcome": "Revoking the exposed credential will immediately cut off external access to the OpenAI API. Restricting the IAM role will prevent privilege escalation and limit the impact of any future compromise, significantly reducing the attack surface and potential for unauthorized data access or financial manipulation.",
+    "recommended_action": {
+      "verb": "remediate",
+      "target": {
+        "system": "github+aws",
+        "resource": "OpenAI API key and IAM role",
+        "id": "finops-credential, bedrock-finops-execution-role"
+      },
+      "reversible": true,
+      "params": {
+        "steps": [
+          "Revoke and rotate the OpenAI API key exposed in 'orbital/finops-ai-agent'.",
+          "Modify the 'bedrock-finops-execution-role' to adhere to least privilege principles: split Bedrock, S3, and Secrets Manager permissions into separate roles or policies, replace wildcard actions with explicit action lists, and scope resource ARNs to specific models, agents, and S3 buckets."
+        ]
+      }
+    },
+    "fallback_action": {
+      "verb": "notify",
+      "target": {
+        "system": "analyst"
+      },
+      "rationale": "If the recommended remediation cannot be performed, an immediate manual investigation and containment strategy by a security analyst is required due to the critical nature of the findings."
+    },
+    "memory_references": [],
+    "autonomy_required": "approval",
+    "requires_human_approval": true,
+    "narration": "An OpenAI API key for the FinOps AI agent is exposed in source code, creating an immediate critical risk. This exposure is compounded by an overly permissive AWS IAM role, `bedrock-finops-execution-role`, which grants wildcard access to Bedrock, S3, and Secrets Manager. I recommend revoking and rotating the exposed OpenAI key immediately, and then restricting the `bedrock-finops-execution-role` to least privilege to prevent privilege escalation and data exfiltration. This action requires human approval due to its critical nature and potential impact on operations."
+  },
+  "attack_paths": [
+    {
+      "path_id": "path_1781895640690_6hk39p",
+      "title": "CRITICAL chain in orbital/finops-ai-agent: AI or cloud credential material appears in source → AI system code is colocated with credential material",
+      "nodes": [
+        {
+          "id": "n_ai_spm_ai_secret_in_source_asset_finops_credential",
+          "type": "secret",
+          "label": "AI or cloud credential material appears in source",
+          "finding_id": "ai-spm:ai-secret-in-source:asset:finops-credential",
+          "severity": "critical"
+        },
+        {
+          "id": "n_ai_spm_ai_system_near_secret_asset_finops_agent_runtime",
+          "type": "ai_system",
+          "label": "AI system code is colocated with credential material",
+          "finding_id": "ai-spm:ai-system-near-secret:asset:finops-agent-runtime",
+          "severity": "critical"
+        }
+      ],
+      "edges": [
+        {
+          "from": "n_ai_spm_ai_secret_in_source_asset_finops_credential",
+          "to": "n_ai_spm_ai_system_near_secret_asset_finops_agent_runtime",
+          "relationship": "leads_to"
+        }
+      ],
+      "individual_severities": [
+        "critical",
+        "critical"
+      ],
+      "combined_severity": "critical",
+      "terminal_asset": "FinOps Payout Review AI Agent",
+      "narrative": "2 findings in orbital/finops-ai-agent chain together. Individually critical — combined severity is critical. The chain terminates at FinOps Payout Review AI Agent.",
+      "recommended_break_points": [
+        "n_ai_spm_ai_secret_in_source_asset_finops_credential",
+        "n_ai_spm_ai_system_near_secret_asset_finops_agent_runtime"
+      ],
+      "decision_id": null
+    },
+    {
+      "path_id": "path_1781895640690_wj4xev",
+      "title": "CRITICAL chain in aws/us-east-1: AI system appears connected to retrieval infrastructure → Service role has Bedrock + Secrets Manager + S3 with wildcard-capable access",
+      "nodes": [
+        {
+          "id": "n_ai_spm_rag_application_detected_asset_aws_bedrock_payout_agent",
+          "type": "agent",
+          "label": "AI system appears connected to retrieval infrastructure",
+          "finding_id": "ai-spm:rag-application-detected:asset:aws-bedrock-payout-agent",
+          "severity": "medium"
+        },
+        {
+          "id": "n_ai_spm_bedrock_knowledge_base_rag_asset_aws_bedrock_kb_contracts",
+          "type": "vector_store",
+          "label": "Bedrock Knowledge Base (RAG) requires retrieval authorization review",
+          "finding_id": "ai-spm:bedrock-knowledge-base-rag:asset:aws-bedrock-kb-contracts",
+          "severity": "medium"
+        },
+        {
+          "id": "n_ai_spm_bedrock_agent_action_groups_asset_aws_bedrock_payout_agent",
+          "type": "agent",
+          "label": "Bedrock Agent has action groups — runtime controls required",
+          "finding_id": "ai-spm:bedrock-agent-action-groups:asset:aws-bedrock-payout-agent",
+          "severity": "high"
+        },
+        {
+          "id": "n_ai_spm_iam_ai_role_wildcard_asset_aws_bedrock_service_role",
+          "type": "iam_role",
+          "label": "IAM role with AI service access uses wildcard actions",
+          "finding_id": "ai-spm:iam-ai-role-wildcard:asset:aws-bedrock-service-role",
+          "severity": "high"
+        },
+        {
+          "id": "n_ai_spm_iam_bedrock_secrets_s3_combo_asset_aws_bedrock_service_role",
+          "type": "iam_role",
+          "label": "Service role has Bedrock + Secrets Manager + S3 with wildcard-capable access",
+          "finding_id": "ai-spm:iam-bedrock-secrets-s3-combo:asset:aws-bedrock-service-role",
+          "severity": "critical"
+        }
+      ],
+      "edges": [
+        {
+          "from": "n_ai_spm_rag_application_detected_asset_aws_bedrock_payout_agent",
+          "to": "n_ai_spm_bedrock_knowledge_base_rag_asset_aws_bedrock_kb_contracts",
+          "relationship": "leads_to"
+        },
+        {
+          "from": "n_ai_spm_bedrock_knowledge_base_rag_asset_aws_bedrock_kb_contracts",
+          "to": "n_ai_spm_bedrock_agent_action_groups_asset_aws_bedrock_payout_agent",
+          "relationship": "leads_to"
+        },
+        {
+          "from": "n_ai_spm_bedrock_agent_action_groups_asset_aws_bedrock_payout_agent",
+          "to": "n_ai_spm_iam_ai_role_wildcard_asset_aws_bedrock_service_role",
+          "relationship": "leads_to"
+        },
+        {
+          "from": "n_ai_spm_iam_ai_role_wildcard_asset_aws_bedrock_service_role",
+          "to": "n_ai_spm_iam_bedrock_secrets_s3_combo_asset_aws_bedrock_service_role",
+          "relationship": "leads_to"
+        }
+      ],
+      "individual_severities": [
+        "medium",
+        "medium",
+        "high",
+        "high",
+        "critical"
+      ],
+      "combined_severity": "critical",
+      "terminal_asset": "bedrock-finops-execution-role",
+      "narrative": "5 findings in aws/us-east-1 chain together. Individually medium/high/critical — combined severity is critical. The chain terminates at bedrock-finops-execution-role.",
+      "recommended_break_points": [
+        "n_ai_spm_rag_application_detected_asset_aws_bedrock_payout_agent",
+        "n_ai_spm_bedrock_knowledge_base_rag_asset_aws_bedrock_kb_contracts"
+      ],
+      "decision_id": null
+    }
+  ],
+  "finding_count": 9,
+  "path_count": 2
+}

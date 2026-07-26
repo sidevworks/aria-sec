@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA — The autonomous security analyst you can actually trust to act</title>
+<meta name="description" content="ARIA watches your environment, explains the risk, and contains threats — under autonomy you bound and audit. Voice-native, governed, always watching.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .proof-row { display:grid; grid-template-columns: repeat(4,1fr); gap: var(--sp-4); margin-top: var(--sp-7); }
+  .proof-row .panel { text-align:left; }
+  .proof-row .ico { margin-bottom: var(--sp-3); color: var(--cyan); }
+  @media (max-width: 760px){ .proof-row { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px){ .proof-row { grid-template-columns: 1fr; } }
+  .problem { border-left: 2px solid var(--magenta); padding-left: var(--sp-5); max-width: 42rem; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<!-- ====== Boot overlay (≤1.5s, then reveals; instant text paint) ====== -->
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot-log" role="status">
+    <div class="line">AUTH MODULE <span class="ok">v4.2.1</span></div>
+    <div class="line">ENCRYPTION HANDSHAKE: <span class="ok">AES-256-GCM</span></div>
+    <div class="line">IDENTITY MESH: <span class="ok">CONNECTED</span></div>
+    <div class="line">GALAXY RENDER: <span class="ok">STREAMING</span></div>
+    <div class="line">AWAITING OPERATOR <span class="boot-caret"></span></div>
+  </div>
+</div>
+
+<!-- ====== Landing voice choice (non-blocking; Esc or backdrop dismisses) ====== -->
+<div class="choice-veil" id="choice" hidden>
+  <div class="choice panel" role="dialog" aria-modal="false" aria-labelledby="choice-title">
+    <span class="t-micro t-micro--accent">ARIA · voice online</span>
+    <h2 class="t-h2" id="choice-title" style="margin-top:var(--sp-3)">How would you like to begin?</h2>
+    <div class="options">
+      <button class="btn btn--primary btn--block" data-dismiss><svg class="ico"><use href="../icons.svg#i-tour"/></svg>Take the guided tour</button>
+      <button class="btn btn--ghost btn--block" data-dismiss>Explore on your own</button>
+      <button class="btn btn--quiet btn--block" data-dismiss>Skip to the pitch</button>
+    </div>
+    <p class="t-small t-dim" style="margin-top:var(--sp-4)">Audio plays only after you choose. Captions always available.</p>
+  </div>
+</div>
+
+<!-- ====== Persistent HUD ====== -->
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html" aria-current="page">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<aside class="hud-stack" aria-label="System status">
+  <div class="row"><span class="t-micro">System</span><b><span class="dot dot--nominal"></span>Online</b></div>
+  <div class="row"><span class="t-micro">Threat level</span><b><span class="dot dot--nominal"></span>Nominal</b></div>
+  <div class="row"><span class="t-micro">Mode</span><b>Governed</b></div>
+  <div class="row"><span class="t-micro">Voice</span><b>Ready</b></div>
+</aside>
+
+<aside class="hud-rail" aria-label="Controls">
+  <button class="btn-rail" aria-label="Open command console"><svg class="ico"><use href="../icons.svg#i-console"/></svg></button>
+  <button class="btn-rail" aria-label="Enable voice mode"><svg class="ico"><use href="../icons.svg#i-mic"/></svg></button>
+  <button class="btn-rail" aria-label="Audio on or off"><svg class="ico"><use href="../icons.svg#i-audio-off"/></svg></button>
+  <button class="btn-rail" aria-label="Start guided tour"><svg class="ico"><use href="../icons.svg#i-tour"/></svg></button>
+</aside>
+
+<main class="page container--wide" id="main">
+  <!-- ====== Hero (crawlable text, readable before any heavy asset) ====== -->
+  <section class="hero container">
+    <span class="t-micro t-micro--accent">Autonomous Resilience Intelligence Architecture</span>
+    <h1 class="t-display-xl" style="margin-top:var(--sp-4)">The autonomous security analyst you can actually trust to act.</h1>
+    <p class="sub">AI agents are flooding into companies with zero security around them. ARIA watches your environment, explains the risk, and contains threats — under autonomy you bound and audit.</p>
+    <div class="cta-row">
+      <a class="btn btn--primary" href="trial.html">Request a 14-day trial</a>
+      <a class="btn btn--ghost" href="demo.html"><svg class="ico"><use href="../icons.svg#i-play"/></svg>Watch the 90-second demo</a>
+    </div>
+  </section>
+
+  <!-- ====== The galaxy (hero visual; WebGL slot — this composition is also the poster fallback) ====== -->
+  <section aria-label="Platform galaxy">
+    <div class="galaxy-stage">
+      <svg class="links" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M220,168 Q360,240 500,291"/>
+        <path d="M760,146 Q640,230 500,291"/>
+        <path d="M260,426 Q380,370 500,291"/>
+        <path d="M740,414 Q620,366 500,291"/>
+        <path d="M220,168 Q500,60 760,146"/>
+        <path d="M260,426 Q500,520 740,414"/>
+      </svg>
+      <button class="node pos-threat" style="--accent:var(--sector-threat)"><span class="node-callout">Threat intel cluster</span><span class="node-label">Threat Intel</span></button>
+      <button class="node pos-network" style="--accent:var(--sector-network)"><span class="node-callout">Connection map</span><span class="node-label">Network &amp; Access</span></button>
+      <button class="node pos-command node--active" style="--accent:var(--sector-command)"><span class="node-callout">Command intelligence core</span><span class="node-label">Command</span></button>
+      <button class="node pos-response" style="--accent:var(--sector-response)"><span class="node-callout">Containment protocols</span><span class="node-label">Response</span></button>
+      <button class="node pos-identity" style="--accent:var(--sector-identity)"><span class="node-callout">Identity galaxy online</span><span class="node-label">Identity &amp; Access</span></button>
+    </div>
+
+    <!-- Mobile: spatial galaxy → stacked tappable sectors -->
+    <nav class="sector-list container" aria-label="Sectors (mobile)">
+      <a class="card" href="functions.html" style="--accent:var(--sector-threat)" data-accent><svg class="ico" style="color:var(--sector-threat)"><use href="../icons.svg#i-radar"/></svg><div><b class="t-h3">Threat Intel</b><p class="t-small" style="margin:0">Overview · vectors · timeline · health</p></div></a>
+      <a class="card" href="functions.html" style="--accent:var(--sector-network)" data-accent><svg class="ico" style="color:var(--sector-network)"><use href="../icons.svg#i-network"/></svg><div><b class="t-h3">Network &amp; Access</b><p class="t-small" style="margin:0">Live network · logs · sessions</p></div></a>
+      <a class="card" href="functions.html" style="--accent:var(--sector-command)" data-accent><svg class="ico" style="color:var(--sector-command)"><use href="../icons.svg#i-command"/></svg><div><b class="t-h3">Command</b><p class="t-small" style="margin:0">AI-SPM · command center · decisions</p></div></a>
+      <a class="card" href="functions.html" style="--accent:var(--sector-response)" data-accent><svg class="ico" style="color:var(--sector-response)"><use href="../icons.svg#i-shield"/></svg><div><b class="t-h3">Response</b><p class="t-small" style="margin:0">Incidents · blocks · quarantine · policy</p></div></a>
+      <a class="card" href="functions.html" style="--accent:var(--sector-identity)" data-accent><svg class="ico" style="color:var(--sector-identity)"><use href="../icons.svg#i-identity"/></svg><div><b class="t-h3">Identity &amp; Access</b><p class="t-small" style="margin:0">ITDR · UEBA · zero trust</p></div></a>
+    </nav>
+  </section>
+
+  <!-- ====== The problem ====== -->
+  <section class="section container">
+    <div class="problem">
+      <span class="t-micro">The problem</span>
+      <h2 class="t-h1" style="margin-top:var(--sp-3)">SOC tools show you data. They don't decide, explain, or act.</h2>
+      <p>And the ones that act — you can't trust them, and you can't audit them. ARIA does all three: it watches, explains exactly what it found and why it matters, and acts only as far as you allow, with every decision recorded and reviewable.</p>
+    </div>
+  </section>
+
+  <!-- ====== Proof points ====== -->
+  <section class="section container--wide">
+    <div class="proof-row">
+      <div class="panel"><svg class="ico"><use href="../icons.svg#i-mic"/></svg><h3 class="t-h3">Voice-native</h3><p class="t-small">A real, interruptible two-way conversation over live data — not a chatbot bolted onto a dashboard.</p></div>
+      <div class="panel"><svg class="ico" style="color:var(--teal)"><use href="../icons.svg#i-aispm"/></svg><h3 class="t-h3">AI-SPM</h3><p class="t-small">Discovers every model, prompt, secret, and cloud asset across 7 connectors — then maps attack paths and blast radius.</p></div>
+      <div class="panel"><svg class="ico" style="color:var(--violet)"><use href="../icons.svg#i-ladder"/></svg><h3 class="t-h3">Governed autonomy</h3><p class="t-small">Trust is earned per capability. ARIA reads its trust score — it can never write it. You decide how far it goes.</p></div>
+      <div class="panel"><svg class="ico" style="color:var(--sky)"><use href="../icons.svg#i-identity"/></svg><h3 class="t-h3">Identity galaxy</h3><p class="t-small">Impossible travel, privilege drift, behavioural baselines — and one-click containment.</p></div>
+    </div>
+  </section>
+
+  <!-- ====== Closing CTA ====== -->
+  <section class="section container" style="text-align:center">
+    <h2 class="t-display">See it run on your world.</h2>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn--primary" href="trial.html">Request a 14-day trial</a>
+      <a class="btn btn--quiet" href="investors.html">For investors</a>
+    </div>
+  </section>
+
+  <footer class="site-foot container">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · +973 3614 6601 · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<!-- Mobile thumb CTA -->
+<a class="btn btn--primary cta-thumb" href="trial.html" style="display:none" id="thumbCta">Request a 14-day trial</a>
+
+<!-- Command console -->
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="show me AI-SPM · what is the trust ladder · open identity" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+
+<script>
+  // Comp behavior: boot dismisses ≤1.5s (instantly under reduced motion), then voice choice appears.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const boot = document.getElementById('boot');
+  const choice = document.getElementById('choice');
+  setTimeout(() => {
+    boot.style.transition = 'opacity 400ms var(--ease-std)';
+    boot.style.opacity = '0';
+    setTimeout(() => { boot.remove(); choice.hidden = false; }, reduced ? 0 : 400);
+  }, reduced ? 0 : 1400);
+  choice.addEventListener('click', e => {
+    if (e.target === choice || e.target.closest('[data-dismiss]')) choice.hidden = true;
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape') choice.hidden = true; });
+  // Show thumb CTA on small screens only
+  const mq = matchMedia('(max-width: 760px)');
+  const sync = () => document.getElementById('thumbCta').style.display = mq.matches ? 'inline-flex' : 'none';
+  mq.addEventListener('change', sync); sync();
+</script>
+</body>
+</html>

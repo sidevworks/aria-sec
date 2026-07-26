@@ -1,0 +1,341 @@
+.ariaCopilot {
+  --copilot-accent: #63f5ff;
+  position: fixed;
+  right: 16px;
+  bottom: 86px;
+  z-index: 9991;
+  width: min(430px, calc(100vw - 32px));
+  color: #eaf7ff;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background:
+    linear-gradient(145deg, rgba(4, 8, 22, 0.94), rgba(8, 10, 28, 0.9)),
+    radial-gradient(circle at 18% 0%, rgba(99, 245, 255, 0.16), transparent 32%);
+  border: 1px solid rgba(99, 245, 255, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(22px) saturate(1.1);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.ariaCopilot.compact {
+  width: min(390px, calc(100vw - 32px));
+}
+
+.ariaCopilot.minimized {
+  width: min(280px, calc(100vw - 32px));
+}
+
+.ariaCopilotHeader,
+.ariaCopilotHeaderActions,
+.ariaCopilotIdentity,
+.ariaCopilotGovernance,
+.ariaCopilotPrompt {
+  display: flex;
+  align-items: center;
+}
+
+.ariaCopilotHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid rgba(99, 245, 255, 0.12);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.ariaCopilotHeader:active {
+  cursor: grabbing;
+}
+
+.ariaCopilot.minimized .ariaCopilotHeader {
+  border-bottom: 0;
+  padding: 8px 9px;
+}
+
+.ariaCopilotIdentity {
+  min-width: 0;
+  gap: 9px;
+  padding: 0;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ariaCopilot.minimized .ariaCopilotIdentity strong {
+  font-size: 10px;
+}
+
+.ariaCopilot.minimized .ariaCopilotIdentity em {
+  display: none;
+}
+
+.ariaCopilotIdentity strong,
+.ariaCopilotIdentity em,
+.ariaCopilotCard strong,
+.ariaCopilotCard em {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ariaCopilotIdentity strong {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ariaCopilotIdentity em {
+  margin-top: 2px;
+  color: rgba(173, 217, 255, 0.58);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.ariaCopilotCore {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--copilot-accent);
+  box-shadow: 0 0 16px rgba(99, 245, 255, 0.85);
+}
+
+.ariaCopilotHeaderActions {
+  gap: 5px;
+  flex: 0 0 auto;
+  justify-content: end;
+  min-width: max-content;
+}
+
+.ariaCopilotPill {
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(99, 245, 255, 0.24);
+  color: rgba(159, 231, 255, 0.9);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ariaCopilot.minimized .ariaCopilotPill {
+  display: none;
+}
+
+.ariaCopilotPill.warn {
+  border-color: rgba(255, 200, 87, 0.34);
+  color: #ffc857;
+  background: rgba(255, 200, 87, 0.08);
+}
+
+.ariaCopilotPill.danger {
+  border-color: rgba(255, 61, 129, 0.38);
+  color: #ff8ab2;
+  background: rgba(255, 61, 129, 0.08);
+}
+
+.ariaCopilotIconButton {
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 245, 255, 0.2);
+  background: rgba(99, 245, 255, 0.07);
+  color: rgba(234, 247, 255, 0.82);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  overflow: hidden;
+}
+
+.ariaCopilotContextGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 9px 10px;
+}
+
+.ariaCopilot.expanded .ariaCopilotContextGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ariaCopilotCard {
+  min-width: 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 245, 255, 0.1);
+  background: rgba(234, 247, 255, 0.035);
+}
+
+.ariaCopilotCard span {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(173, 217, 255, 0.52);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ariaCopilotCard strong {
+  color: #eaf7ff;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.ariaCopilotCard em {
+  margin-top: 4px;
+  color: rgba(173, 217, 255, 0.55);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.ariaCopilotCaveat {
+  margin: 0 10px 8px;
+  padding: 8px;
+  border-left: 2px solid rgba(255, 200, 87, 0.7);
+  background: rgba(255, 200, 87, 0.06);
+  color: rgba(255, 224, 154, 0.86);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.ariaCopilotHistory {
+  max-height: 260px;
+  overflow: auto;
+  padding: 0 10px;
+  display: grid;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 245, 255, 0.34) transparent;
+}
+
+.ariaCopilotMessage {
+  padding: 8px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(234, 247, 255, 0.08);
+  background: rgba(0, 3, 10, 0.36);
+}
+
+.ariaCopilotMessage.operator {
+  border-color: rgba(167, 139, 250, 0.2);
+  background: rgba(33, 21, 62, 0.36);
+}
+
+.ariaCopilotMessage span {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(99, 245, 255, 0.72);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+}
+
+.ariaCopilotMessage p {
+  margin: 0;
+  white-space: pre-wrap;
+  color: rgba(234, 247, 255, 0.84);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ariaCopilotQuickPrompts,
+.ariaCopilotGovernance {
+  padding: 9px 10px 0;
+}
+
+.ariaCopilotQuickPrompts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ariaCopilotQuickPrompts button,
+.ariaCopilotGovernance button,
+.ariaCopilotPrompt button {
+  border: 1px solid rgba(99, 245, 255, 0.22);
+  border-radius: 6px;
+  background: rgba(99, 245, 255, 0.08);
+  color: rgba(159, 231, 255, 0.92);
+  cursor: pointer;
+  font: inherit;
+}
+
+.ariaCopilotQuickPrompts button {
+  padding: 5px 7px;
+  font-size: 9px;
+}
+
+.ariaCopilotGovernance {
+  justify-content: space-between;
+  gap: 8px;
+  color: rgba(173, 217, 255, 0.6);
+  font-size: 10px;
+}
+
+.ariaCopilotGovernance span {
+  min-width: 0;
+}
+
+.ariaCopilotGovernance button {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  color: #ffc857;
+  border-color: rgba(255, 200, 87, 0.28);
+  background: rgba(255, 200, 87, 0.08);
+}
+
+.ariaCopilotPrompt {
+  gap: 8px;
+  padding: 10px;
+}
+
+.ariaCopilotPrompt input {
+  min-width: 0;
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid rgba(160, 205, 255, 0.22);
+  background: rgba(5, 10, 21, 0.92);
+  color: #eaf7ff;
+  padding: 0 10px;
+  outline: none;
+  font: inherit;
+  font-size: 12px;
+}
+
+.ariaCopilotPrompt button {
+  height: 36px;
+  padding: 0 12px;
+}
+
+@media (max-width: 760px) {
+  .ariaCopilot {
+    right: 10px;
+    left: 10px;
+    bottom: 78px;
+    width: auto;
+  }
+
+  .ariaCopilotContextGrid,
+  .ariaCopilot.expanded .ariaCopilotContextGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ariaCopilotHeader {
+    align-items: flex-start;
+  }
+
+  .ariaCopilotHeaderActions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

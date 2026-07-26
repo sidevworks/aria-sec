@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA — Investors</title>
+<meta name="description" content="We're building the trust layer that finally lets AI act inside security operations — starting with the AI systems every company is already running.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .thesis { max-width: 46rem; }
+  .wedge-grid { display:grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); }
+  @media (max-width:760px){ .wedge-grid { grid-template-columns:1fr; } }
+  .ask-slot { border: 1px dashed rgba(159,179,199,0.35); border-radius: var(--r-card); padding: var(--sp-6); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html" aria-current="page">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<aside class="hud-rail" aria-label="Controls">
+  <button class="btn-rail" aria-label="Open command console"><svg class="ico"><use href="../icons.svg#i-console"/></svg></button>
+  <button class="btn-rail" aria-label="Enable voice mode"><svg class="ico"><use href="../icons.svg#i-mic"/></svg></button>
+  <button class="btn-rail" aria-label="Audio on or off"><svg class="ico"><use href="../icons.svg#i-audio-off"/></svg></button>
+  <button class="btn-rail" aria-label="Start guided tour"><svg class="ico"><use href="../icons.svg#i-tour"/></svg></button>
+</aside>
+
+<main class="page container" id="main" data-warp="rise">
+  <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Investor channel open</span>
+
+  <section class="section thesis" style="margin-top:var(--sp-6)">
+    <span class="t-micro t-micro--accent">For investors</span>
+    <h1 class="t-display" style="margin-top:var(--sp-4)">We're building the trust layer that finally lets AI act inside security operations.</h1>
+    <p class="t-body" style="font-size:var(--fs-h3)">Starting with the AI systems every company is already running — right now, unprotected.</p>
+    <button class="fom" data-audio="/audio/funding.mp3" data-captions="/captions/funding.vtt" style="margin-top:var(--sp-4)">
+      <span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Hear the thesis — ARIA narrates (2:10)
+    </button>
+  </section>
+
+  <section class="section">
+    <div class="wedge-grid">
+      <div class="card" data-accent style="--accent:var(--violet)">
+        <span class="t-micro">Wedge one</span>
+        <h2 class="t-h2" style="margin-top:var(--sp-2)">Governed autonomy</h2>
+        <p class="t-small">Autonomous SOC is already a funded category — but every entrant shares the same unsolved problem: they can't tell you what they did, why, and under what authority. ARIA's trust ladder, platform-owned scoring, and single verified execution path are the unlock incumbents lack.</p>
+      </div>
+      <div class="card" data-accent style="--accent:var(--teal)">
+        <span class="t-micro">Wedge two</span>
+        <h2 class="t-h2" style="margin-top:var(--sp-2)">AI-SPM — the timing</h2>
+        <p class="t-small">Customers are deploying AI agents with no inventory, no attack paths, no blast radius. ARIA ships a dedicated AI security posture layer built in from the ground up, across seven enterprise data sources simultaneously.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stat-strip">
+      <div class="panel stat"><b>7</b><span class="t-micro">Enterprise connectors live</span></div>
+      <div class="panel stat"><b>&lt;1ms</b><span class="t-micro">Autonomous response latency</span></div>
+      <div class="panel stat"><b>~100</b><span class="t-micro">API endpoints · platform, not demo</span></div>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center">
+    <h2 class="t-h1">The product is the proof.</h2>
+    <p style="max-width:38rem; margin-inline:auto">Everything on this site is the live platform. Watch ARIA run a scan, map an attack path, and contain a threat — explained every step of the way.</p>
+    <div class="hero cta-row" style="justify-content:center">
+      <a class="btn btn--ghost" href="demo.html"><svg class="ico"><use href="../icons.svg#i-play"/></svg>Play the live demo</a>
+    </div>
+  </section>
+
+  <!-- Market framing + ask: structured slots, founder fills (brief §6.5 / §15a confirm-list) -->
+  <section class="section">
+    <div class="grid grid--2">
+      <div class="ask-slot">
+        <span class="t-micro">Market framing</span>
+        <h3 class="t-h2" style="margin-top:var(--sp-2)">[Why now — market slide]</h3>
+        <p class="t-small t-dim">Founder supplies: market size/shape, category formation, named comparables. Structured slot — do not ship empty.</p>
+      </div>
+      <div class="ask-slot">
+        <span class="t-micro">The ask</span>
+        <h3 class="t-h2" style="margin-top:var(--sp-2)">[Round · use of funds · team]</h3>
+        <p class="t-small t-dim">Founder supplies: stage, amount, deployment plan, team/advisors. Structured slot — do not ship empty.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gated deck request -->
+  <section class="section">
+    <div class="panel" style="max-width:30rem; margin-inline:auto">
+      <span class="t-micro t-micro--accent">Investor access</span>
+      <h2 class="t-h2" style="margin:var(--sp-2) 0 var(--sp-4)">Request the deck &amp; data room</h2>
+      <form class="stack-4">
+        <div class="field"><label for="iv-name">Full name <span class="req" aria-hidden="true">*</span></label><input class="input" id="iv-name" autocomplete="name" required></div>
+        <div class="field"><label for="iv-mail">Work email <span class="req" aria-hidden="true">*</span></label><input class="input" id="iv-mail" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="iv-fund">Fund / firm</label><input class="input" id="iv-fund" autocomplete="organization"></div>
+        <div class="field"><label for="iv-note">Note</label><textarea class="textarea" id="iv-note" placeholder="Optional — anything specific you want to see"></textarea></div>
+        <!-- honeypot (visually hidden, build wires the trap) -->
+        <div class="field" style="position:absolute; left:-9999px" aria-hidden="true"><label for="iv-web">Website</label><input class="input" id="iv-web" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn--primary btn--block" type="submit"><svg class="ico"><use href="../icons.svg#i-send"/></svg>Request access</button>
+        <p class="t-small t-dim" style="text-align:center; margin:0">Goes straight to the founder's desk.</p>
+      </form>
+    </div>
+    <p style="text-align:center; margin-top:var(--sp-5)"><a class="btn btn--quiet" href="contact.html">Talk to the founder</a></p>
+  </section>
+
+  <footer class="site-foot">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="why does ARIA win · play the demo" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

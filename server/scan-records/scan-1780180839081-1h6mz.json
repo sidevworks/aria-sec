@@ -1,0 +1,65 @@
+{
+  "id": "scan-1780180839081-1h6mz",
+  "depth": "quick",
+  "target": "local-host",
+  "status": "complete",
+  "started_at": "2026-05-30T22:40:39.081Z",
+  "completed_at": "2026-05-30T22:40:42.890Z",
+  "duration_ms": 3809,
+  "findings": [
+    {
+      "severity": "critical",
+      "summary": "Memory pressure is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "Disk capacity is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "2 critical incidents active — immediate response required",
+      "source": "incident-engine"
+    }
+  ],
+  "phases": [
+    {
+      "phase": "init",
+      "message": "Initialising scan engine",
+      "ts": "2026-05-30T22:40:39.282Z"
+    },
+    {
+      "phase": "network",
+      "message": "Probing network perimeter",
+      "ts": "2026-05-30T22:40:39.883Z"
+    },
+    {
+      "phase": "hosts",
+      "message": "Enumerating live hosts",
+      "ts": "2026-05-30T22:40:40.784Z"
+    },
+    {
+      "phase": "auth",
+      "message": "Checking auth surface",
+      "ts": "2026-05-30T22:40:41.987Z"
+    },
+    {
+      "phase": "findings",
+      "message": "Promoting findings",
+      "ts": "2026-05-30T22:40:42.408Z"
+    },
+    {
+      "phase": "done",
+      "message": "Scan complete",
+      "ts": "2026-05-30T22:40:42.609Z"
+    }
+  ],
+  "snapshot_summary": {
+    "risk_score": 0,
+    "severity": "critical",
+    "sources": 9,
+    "connections": 0,
+    "incidents": 2
+  }
+}

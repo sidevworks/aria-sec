@@ -1,0 +1,75 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+out
+release
+*.local
+
+# Runtime artifacts
+server/scan-records/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+.env.local
+.env.*.local
+
+# Runtime Aria learning/memory data
+aria-memory/*
+!aria-memory/.gitkeep
+.superpowers/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Claude Code worktrees (internal)
+.claude/worktrees/
+
+
+
+# Raw uncompressed intro master (compressed version lives in public/landing/media/intro.mp4)
+/public/Aria intro.mp4
+/public/ARIA INTRO.mp4
+
+# Demo HQ video — 222MB, exceeds GitHub's 100MB limit; served from S3, not git
+/public/landing/media/demo-hq-complete.mp4
+
+# Investor deck — separate workstream, not part of the platform repo
+/pitch-deck/
+
+# License signing private key — never commit
+.secrets/
+aria-memory-test-*/
+.vercel
+.env*
+# ...but the documented template must ship.
+!.env.example
+
+# Private founder/prep material — never publish
+/CLAUDE.md
+/claude:codex.md
+/pitch-deck/
+/docs/session-exports/
+/marketing/
+/tmp/
+/.runlogs/

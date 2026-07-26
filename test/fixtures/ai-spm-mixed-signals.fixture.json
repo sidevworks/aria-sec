@@ -1,0 +1,95 @@
+{
+  "inventory": {
+    "generated_at": "2026-01-10T10:00:00.000Z",
+    "connectors": [
+      {
+        "id": "github",
+        "status": "live",
+        "mode": "local-repository",
+        "scanned_at": "2026-01-10T10:00:00.000Z",
+        "files_scanned": 412,
+        "repositories": [
+          {
+            "repo": "acme/support-assistant",
+            "files_scanned": 412
+          }
+        ]
+      },
+      {
+        "id": "aws",
+        "status": "live",
+        "mode": "organization",
+        "scanned_at": "2026-01-10T10:00:00.000Z",
+        "files_scanned": 0,
+        "repositories": [
+          {
+            "repo": "acme/support-assistant",
+            "files_scanned": 0
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "id": "ai-system:support-assistant",
+        "type": "ai_system",
+        "name": "Support Assistant",
+        "repo": "acme/support-assistant",
+        "evidence": [
+          {
+            "path": "src/assistant.js",
+            "line": 22,
+            "signal": "OpenAI SDK usage"
+          }
+        ]
+      },
+      {
+        "id": "agent:triage-bot",
+        "type": "agent",
+        "name": "Triage Bot",
+        "repo": "acme/support-assistant",
+        "sensitivity": "sensitive",
+        "capabilities": [
+          "filesystem",
+          "shell",
+          "browser"
+        ],
+        "evidence": [
+          {
+            "path": "agents/triage.ts",
+            "line": 17,
+            "signal": "Tool-call policy surface"
+          }
+        ]
+      },
+      {
+        "id": "vector-store:cases-index",
+        "type": "vector_store",
+        "name": "Cases Index",
+        "repo": "acme/support-assistant",
+        "sensitivity": "sensitive",
+        "evidence": [
+          {
+            "path": "rag/retriever.ts",
+            "line": 9,
+            "signal": "PII-tagged retrieval source"
+          }
+        ]
+      },
+      {
+        "id": "secret:aws-openai-token",
+        "type": "secret",
+        "name": "OpenAI API token (redacted)",
+        "repo": "acme/support-assistant",
+        "evidence": [
+          {
+            "path": "infra/lambda/env.tf",
+            "line": 31,
+            "signal": "Credential material",
+            "snippet": "sk-...redacted"
+          }
+        ]
+      }
+    ]
+  }
+}

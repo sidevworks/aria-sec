@@ -1,0 +1,216 @@
+.trialForm {
+  position: fixed;
+  z-index: 7;
+  right: 1.6rem;
+  top: 6.5rem;                          /* sits just below the header nav */
+  max-height: calc(100vh - 11.5rem);    /* and clears the bottom Prev/Next bar */
+  width: min(33rem, 42vw);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.72rem;
+  padding: 1.2rem 1.5rem;
+  color: #eaf6ff;
+  background: rgba(5, 9, 16, 0.66);
+  border: 1px solid rgba(234, 246, 255, 0.12);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  clip-path: polygon(0 0, calc(100% - 0.9rem) 0, 100% 0.9rem, 100% 100%, 0.9rem 100%, 0 calc(100% - 0.9rem));
+  animation: trialFormIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes trialFormIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+.trialFormKicker {
+  font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sector, #37c4e0);
+}
+
+.trialFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.9rem;
+}
+
+.trialField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0; /* let the 1fr grid tracks shrink below the input's intrinsic width */
+}
+
+.trialFieldWide {
+  grid-column: 1 / -1;
+}
+
+.trialField span {
+  font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(234, 246, 255, 0.6);
+}
+
+.trialField span em {
+  font-style: normal;
+  color: rgba(234, 246, 255, 0.35);
+}
+
+.trialField input,
+.trialField select,
+.trialField textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.5rem 0.7rem;
+  font-family: "Space Grotesk", "Inter Tight", sans-serif;
+  font-size: 0.9rem;
+  color: #eaf6ff;
+  background: rgba(13, 19, 30, 0.9);
+  border: 1px solid rgba(234, 246, 255, 0.14);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.trialField textarea {
+  resize: vertical;
+  min-height: 2.4rem;
+}
+
+.trialField select option {
+  background: #06101c;
+  color: #eaf6ff;
+}
+
+.trialField input:focus,
+.trialField select:focus,
+.trialField textarea:focus {
+  border-color: var(--sector, #37c4e0);
+  background: rgba(20, 28, 42, 0.95);
+}
+
+.trialField input::placeholder,
+.trialField textarea::placeholder {
+  color: rgba(234, 246, 255, 0.3);
+}
+
+.trialCheck {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(234, 246, 255, 0.82);
+  cursor: pointer;
+}
+
+.trialCheck input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--sector, #37c4e0);
+  cursor: pointer;
+}
+
+.trialFormSubmit {
+  margin-top: 0.2rem;
+  padding: 0.85rem 1.4rem;
+  font-family: "Space Grotesk", "Inter Tight", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #06080f;
+  background: #eaf6ff;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+}
+
+.trialFormSubmit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 36px rgba(55, 196, 224, 0.32);
+}
+
+.trialFormSubmit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.trialHoneypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.trialFormError {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #ff7d96;
+}
+
+.trialFormError a {
+  color: #ffb3c1;
+}
+
+/* Success state */
+.trialFormDone {
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.trialFormDone h2 {
+  margin: 0;
+  font-family: "Space Grotesk", "Inter Tight", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.trialFormDone p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(234, 246, 255, 0.78);
+}
+
+.trialFormReset {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(234, 246, 255, 0.85);
+  background: transparent;
+  border: 1px solid rgba(234, 246, 255, 0.22);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .trialForm {
+    position: fixed;
+    top: auto;
+    bottom: 5rem;          /* sits above the Prev/Next bar so nav stays reachable */
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-height: calc(100dvh - 12rem); /* and below the header (logo = home) */
+    transform: none;
+    animation: none;
+  }
+  .trialFormGrid { grid-template-columns: 1fr; }
+}

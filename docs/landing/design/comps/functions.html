@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA Platform — the capability galaxy</title>
+<meta name="description" content="AI-SPM, Identity Galaxy (ITDR/UEBA), governed autonomy, decision engine, autonomous response, command center, network intelligence, and 7 enterprise connectors.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .cap-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-5); }
+  @media (max-width:760px){ .cap-grid { grid-template-columns:1fr; } }
+  .cap { display:flex; flex-direction:column; gap: var(--sp-3); }
+  .cap .viz {
+    height: 8.5rem; border-radius: var(--r-panel); overflow:hidden; position:relative;
+    border: var(--hairline-dim);
+    background: radial-gradient(120% 140% at 20% 0%, color-mix(in srgb, var(--accent) 14%, transparent), var(--ink-deep) 60%);
+  }
+  .cap .viz svg { position:absolute; inset:0; width:100%; height:100%; }
+  .cap .why { color: var(--text-dim); font-size: var(--fs-small); }
+  .cap .fom { margin-top:auto; align-self:flex-start; }
+  .viz path, .viz circle, .viz line, .viz rect { vector-effect: non-scaling-stroke; }
+  /* signature micro-motion */
+  .viz .pulse { animation: viz-pulse 3s var(--ease-std) infinite; transform-origin:center; }
+  @keyframes viz-pulse { 50% { opacity: 0.35; } }
+  .viz .drawn { stroke-dasharray: 240; stroke-dashoffset: 240; animation: viz-draw 4s var(--ease-std) infinite; }
+  @keyframes viz-draw { 40%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -240; } }
+  .ladder-note { border-left: 2px solid var(--cyan); padding-left: var(--sp-4); max-width: 38rem; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html" aria-current="page">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<aside class="hud-rail" aria-label="Controls">
+  <button class="btn-rail" aria-label="Open command console"><svg class="ico"><use href="../icons.svg#i-console"/></svg></button>
+  <button class="btn-rail" aria-label="Enable voice mode"><svg class="ico"><use href="../icons.svg#i-mic"/></svg></button>
+  <button class="btn-rail" aria-label="Audio on or off"><svg class="ico"><use href="../icons.svg#i-audio-off"/></svg></button>
+  <button class="btn-rail" aria-label="Start guided tour"><svg class="ico"><use href="../icons.svg#i-tour"/></svg></button>
+</aside>
+
+<main class="page container--wide" id="main" data-warp="orbit">
+  <div class="container">
+    <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Capability galaxy online</span>
+    <div class="section-head" style="margin-top:var(--sp-6)">
+      <span class="t-micro t-micro--accent">Platform</span>
+      <h1 class="t-display" style="margin-top:var(--sp-3)">Every capability is a live sector.</h1>
+      <p>Click any node — or ask ARIA to narrate it. Each deep dive is spoken by ARIA itself, with captions.</p>
+      <button class="fom" data-audio="/audio/functions/galaxy.mp3" data-captions="/captions/functions/galaxy.vtt" style="margin-top:var(--sp-3)">
+        <span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>How the galaxy works — ARIA narrates
+      </button>
+    </div>
+  </div>
+
+  <div class="container--wide cap-grid" style="margin-top:var(--sp-7)">
+
+    <!-- AI-SPM (lead) -->
+    <article class="card cap" data-accent style="--accent:var(--teal)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g stroke="rgba(45,212,191,0.5)" fill="none">
+            <circle cx="48" cy="96" r="5"/><circle cx="120" cy="56" r="5"/><circle cx="196" cy="84" r="5"/><circle cx="268" cy="36" r="6"/>
+            <path class="drawn" d="M48,96 L120,56 L196,84 L268,36" stroke="var(--teal)"/>
+          </g>
+          <g fill="rgba(45,212,191,0.8)" font-family="monospace" font-size="9">
+            <text x="40" y="116">repo</text><text x="106" y="44">secret</text><text x="182" y="104">lambda</text><text x="246" y="24">prod-model</text>
+          </g>
+          <circle class="pulse" cx="268" cy="36" r="12" fill="none" stroke="var(--magenta)"/>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--teal)"><use href="../icons.svg#i-aispm"/></svg><h2 class="t-h2">AI-SPM</h2><span class="tier tier--threat"><svg class="ico"><use href="../icons.svg#i-threat"/></svg>Lead wedge</span></div>
+      <p class="t-small">Discovers AI systems, prompts, tools, secrets, model infrastructure and cloud assets across 7 connectors — then maps the exact attack path, confidence, and blast radius.</p>
+      <p class="why">Why it matters: your company is already running AI agents, most with no security posture around them.</p>
+      <button class="fom" data-audio="/audio/functions/ai-spm.mp3" data-captions="/captions/functions/ai-spm.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Identity Galaxy -->
+    <article class="card cap" data-accent style="--accent:var(--sky)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <ellipse cx="160" cy="68" rx="120" ry="44" fill="none" stroke="rgba(56,189,248,0.35)"/>
+          <path class="drawn" d="M70,96 Q160,-10 252,88" fill="none" stroke="var(--magenta)"/>
+          <circle cx="70" cy="96" r="4" fill="var(--sky)"/><circle cx="252" cy="88" r="4" fill="var(--magenta)"/>
+          <g fill="rgba(56,189,248,0.85)" font-family="monospace" font-size="9">
+            <text x="46" y="116">bahrain · 09:14</text><text x="206" y="110">london · 09:16</text>
+          </g>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--sky)"><use href="../icons.svg#i-identity"/></svg><h2 class="t-h2">Identity Galaxy</h2><span class="t-micro">ITDR · UEBA · zero trust</span></div>
+      <p class="t-small">Every department is a galaxy. Impossible-travel detection, privilege-drift timelines, per-person behavioural baselines — and one-click containment.</p>
+      <p class="why">Why it matters: compromised credentials are the quietest path to a serious breach.</p>
+      <button class="fom" data-audio="/audio/functions/identity-galaxy.mp3" data-captions="/captions/functions/identity-galaxy.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Governed Autonomy (with the dedicated ladder visual below) -->
+    <article class="card cap" data-accent style="--accent:var(--violet)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g stroke="rgba(167,139,250,0.5)" fill="none">
+            <rect x="28"  y="92" width="56" height="22" rx="4"/>
+            <rect x="100" y="72" width="56" height="42" rx="4"/>
+            <rect x="172" y="52" width="56" height="62" rx="4"/>
+            <rect x="244" y="30" width="56" height="84" rx="4" stroke="var(--cyan)"/>
+          </g>
+          <g fill="rgba(167,139,250,0.9)" font-family="monospace" font-size="8.5">
+            <text x="34" y="106">approval</text><text x="106" y="106">assisted</text><text x="184" y="106">auto</text><text x="250" y="106">full_auto</text>
+          </g>
+          <circle class="pulse" cx="272" cy="22" r="5" fill="var(--cyan)"/>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--violet)"><use href="../icons.svg#i-ladder"/></svg><h2 class="t-h2">Governed autonomy</h2></div>
+      <p class="t-small">An explicit trust ladder from "ask first" to fully autonomous. Trust is earned per capability, scores are platform-owned, every action verified and audited.</p>
+      <p class="why">Why it matters: this is the trust unlock that lets AI actually act inside a security operation.</p>
+      <button class="fom" data-audio="/audio/functions/governed-autonomy.mp3" data-captions="/captions/functions/governed-autonomy.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Decision Engine / Autonomous Response -->
+    <article class="card cap" data-accent style="--accent:var(--cyan)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g stroke="rgba(99,245,255,0.4)" fill="none">
+            <circle cx="60" cy="40" r="4"/><circle cx="56" cy="98" r="4"/><circle cx="120" cy="70" r="4"/>
+            <path class="drawn" d="M60,40 L120,70 L56,98 M120,70 L210,70" stroke="var(--cyan)"/>
+            <rect x="210" y="50" width="84" height="40" rx="6" stroke="var(--cyan)"/>
+          </g>
+          <g fill="rgba(99,245,255,0.85)" font-family="monospace" font-size="9">
+            <text x="222" y="68">hypothesis</text><text x="222" y="82">conf 0.91</text>
+          </g>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--cyan)"><use href="../icons.svg#i-pulse"/></svg><h2 class="t-h2">Decision engine</h2><span class="t-micro">+ autonomous response</span></div>
+      <p class="t-small">Correlates signals into attack paths every 30 seconds; the response pipeline reacts at sub-millisecond latency — auto-blocking floods and coordinated attacks.</p>
+      <p class="why">Why it matters: a scanner shows signals. ARIA tells you exactly what should happen next, and why.</p>
+      <button class="fom" data-audio="/audio/functions/decision-engine.mp3" data-captions="/captions/functions/decision-engine.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Command Center -->
+    <article class="card cap" data-accent style="--accent:var(--violet-deep)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g stroke="rgba(139,92,246,0.45)" fill="none">
+            <rect x="24" y="22" width="86" height="40" rx="4"/><rect x="118" y="22" width="86" height="40" rx="4"/><rect x="212" y="22" width="86" height="40" rx="4"/>
+            <rect x="24" y="70" width="180" height="44" rx="4"/><rect x="212" y="70" width="86" height="44" rx="4" stroke="var(--cyan)"/>
+          </g>
+          <path class="drawn" d="M34,100 L70,84 L104,96 L140,78 L176,92" fill="none" stroke="var(--cyan)"/>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--violet-deep)"><use href="../icons.svg#i-command"/></svg><h2 class="t-h2">Command center</h2></div>
+      <p class="t-small">Mission control: decision queue, attack-path simulations, live monitor, evidence scans, autonomy palette, audit gallery, and self-diagnostics — one pane.</p>
+      <p class="why">Why it matters: blast radius is understood before anything changes, not after.</p>
+      <button class="fom" data-audio="/audio/functions/command-center.mp3" data-captions="/captions/functions/command-center.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Network Intelligence -->
+    <article class="card cap" data-accent style="--accent:var(--blue)">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g stroke="rgba(22,135,255,0.45)" fill="none">
+            <circle cx="160" cy="68" r="7" stroke="var(--cyan)"/>
+            <circle cx="60" cy="34" r="4"/><circle cx="58" cy="104" r="4"/><circle cx="258" cy="30" r="4"/><circle cx="262" cy="100" r="4"/>
+            <path class="drawn" d="M160,68 L60,34 M160,68 L58,104 M160,68 L258,30 M160,68 L262,100" stroke="rgba(22,135,255,0.7)"/>
+          </g>
+          <g fill="rgba(22,135,255,0.85)" font-family="monospace" font-size="9">
+            <text x="40" y="22">ssh:22</text><text x="244" y="120">rdp:3389</text>
+          </g>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--blue)"><use href="../icons.svg#i-network"/></svg><h2 class="t-h2">Network intelligence</h2></div>
+      <p class="t-small">Live sockets, remotes, listening services, blocklist state. Passive visibility is always safe; active discovery is authorization-gated — no exploit, no payload.</p>
+      <p class="why">Why it matters: observability never becomes uncontrolled scanning.</p>
+      <button class="fom" data-audio="/audio/functions/network.mp3" data-captions="/captions/functions/network.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+
+    <!-- Connectors -->
+    <article class="card cap" data-accent style="--accent:var(--amber); grid-column: 1 / -1">
+      <div class="viz">
+        <svg viewBox="0 0 320 136" aria-hidden="true">
+          <g fill="none" stroke="rgba(255,200,87,0.45)">
+            <circle cx="160" cy="68" r="9" stroke="var(--cyan)"/>
+            <circle cx="42" cy="30" r="4"/><circle cx="42" cy="106" r="4"/><circle cx="104" cy="14" r="4"/><circle cx="104" cy="122" r="4"/><circle cx="278" cy="30" r="4"/><circle cx="278" cy="106" r="4"/><circle cx="216" cy="14" r="4"/>
+            <path class="drawn" d="M160,68 L42,30 M160,68 L42,106 M160,68 L104,14 M160,68 L104,122 M160,68 L278,30 M160,68 L278,106 M160,68 L216,14" stroke="rgba(255,200,87,0.6)"/>
+          </g>
+          <g fill="rgba(255,200,87,0.9)" font-family="monospace" font-size="8.5">
+            <text x="14" y="20">github</text><text x="20" y="124">aws</text><text x="84" y="8">okta</text><text x="84" y="134">azure ad</text><text x="288" y="20" text-anchor="end">snyk</text><text x="298" y="124" text-anchor="end">virustotal</text><text x="204" y="8">elastic</text>
+          </g>
+        </svg>
+      </div>
+      <div class="row"><svg class="ico" style="color:var(--amber)"><use href="../icons.svg#i-connectors"/></svg><h2 class="t-h2">Connectors</h2><span class="t-micro">7 sources · one picture</span></div>
+      <p class="t-small">GitHub · AWS · Okta · Azure AD · Snyk · VirusTotal · Elastic — connected simultaneously, normalized and deduplicated into one inventory and risk engine. Credentials held in a vault.</p>
+      <p class="why">Why it matters: risk doesn't live in one system. Your exposure picture shouldn't either.</p>
+      <button class="fom" data-audio="/audio/functions/connectors.mp3" data-captions="/captions/functions/connectors.vtt"><span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+    </article>
+  </div>
+
+  <!-- ====== Dedicated trust-ladder interactive ====== -->
+  <section class="section container">
+    <div class="section-head">
+      <span class="t-micro t-micro--accent">The trust ladder</span>
+      <h2 class="t-h1" style="margin-top:var(--sp-3)">Autonomy is earned, bounded, and auditable.</h2>
+    </div>
+    <div class="ladder" role="list">
+      <div class="rung" role="listitem"><div class="bar"></div><b class="t-h3">approval</b><p class="t-small">Scans 600+ data points, recommends, asks before any operational action.</p><span class="t-micro">Human decides everything</span></div>
+      <div class="rung" role="listitem" aria-current="step"><div class="bar"></div><b class="t-h3">assisted</b><p class="t-small">Handles standard low-risk operations; escalates anything critical.</p><span class="t-micro">≥0.80 trust · ≥10 samples · ≤3 overrides</span></div>
+      <div class="rung" role="listitem"><div class="bar"></div><b class="t-h3">auto</b><p class="t-small">Acts on low-to-medium risk autonomously; critical decisions still escalate.</p><span class="t-micro">Earned per capability</span></div>
+      <div class="rung" role="listitem"><div class="bar"></div><b class="t-h3">full_auto</b><p class="t-small">Runs 24/7 — isolating threats, blocking IPs, revoking access, quarantining files.</p><span class="t-micro">≥0.97 trust · ≥80 samples · ≤1 override</span></div>
+    </div>
+    <p class="ladder-note" style="margin-top:var(--sp-5)"><b style="color:var(--text-bright)">The model can read its trust score — it can never write it.</b> Scores are platform-owned. You decide when ARIA earns more, and you can pull it back at any moment.</p>
+  </section>
+
+  <footer class="site-foot container">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <a class="btn btn--primary" href="trial.html">Request a 14-day trial</a>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="open AI-SPM · show the identity galaxy · what is full_auto" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

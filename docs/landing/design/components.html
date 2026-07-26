@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA · Component Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="aria-ui.css">
+<style>
+  /* showcase-only chrome */
+  body { padding: var(--sp-8) 0 var(--sp-9); }
+  .lib-section { margin-top: var(--sp-8); }
+  .lib-section > .t-micro { display:block; margin-bottom: var(--sp-4); color: var(--cyan); }
+  .swatches { display:grid; grid-template-columns: repeat(auto-fill, minmax(10rem,1fr)); gap: var(--sp-3); }
+  .swatch { border: var(--hairline-dim); border-radius: var(--r-panel); overflow:hidden; }
+  .swatch i { display:block; height: 3.5rem; }
+  .swatch figcaption { padding: var(--sp-2) var(--sp-3); }
+  .swatch .t-mono { color: var(--text-bright); }
+  .demo-frame { position: relative; border: var(--hairline-dim); border-radius: var(--r-card);
+    overflow:hidden; background: var(--bg-deep); padding: var(--sp-6); }
+  .demo-frame .hud-top, .demo-frame .console, .demo-frame .captions,
+  .demo-frame .hud-rail, .demo-frame .hud-stack, .demo-frame .tour-bar {
+    position: relative; inset:auto; transform:none; left:auto; right:auto; top:auto; bottom:auto; margin: var(--sp-3) auto; }
+  .demo-frame .hud-rail { flex-direction: row; width:max-content; }
+  .specimen-row { display:flex; flex-wrap:wrap; gap: var(--sp-4); align-items:center; }
+  .nodes-row { display:flex; gap: var(--sp-9); padding: var(--sp-8) var(--sp-6) var(--sp-8); flex-wrap:wrap; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<main class="container" style="position:relative; z-index:var(--z-content)">
+  <span class="t-micro t-micro--accent">ARIA design system · component library</span>
+  <h1 class="t-display">Components</h1>
+  <p class="t-body" style="max-width:46rem">Every interface element of the landing experience, built on <code class="t-mono">tokens.css</code>. This page is the living reference for the build phase — view at desktop and ≤760px widths.</p>
+
+  <!-- ====== Color ====== -->
+  <section class="lib-section">
+    <span class="t-micro">01 · Color tokens</span>
+    <div class="swatches">
+      <figure class="swatch"><i style="background:var(--bg-space)"></i><figcaption><span class="t-mono">--bg-space</span><br><span class="t-small t-dim">#06080f</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--ink-panel)"></i><figcaption><span class="t-mono">--ink-panel</span><br><span class="t-small t-dim">#0a0e1a</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--cyan)"></i><figcaption><span class="t-mono">--cyan</span><br><span class="t-small t-dim">#63f5ff · signature</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--teal)"></i><figcaption><span class="t-mono">--teal</span><br><span class="t-small t-dim">#2dd4bf · AI-SPM</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--sky)"></i><figcaption><span class="t-mono">--sky</span><br><span class="t-small t-dim">#38bdf8 · identity</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--blue)"></i><figcaption><span class="t-mono">--blue</span><br><span class="t-small t-dim">#1687ff · network</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--violet)"></i><figcaption><span class="t-mono">--violet</span><br><span class="t-small t-dim">#a78bfa · command</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--amber)"></i><figcaption><span class="t-mono">--amber</span><br><span class="t-small t-dim">#ffc857 · warning</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--magenta)"></i><figcaption><span class="t-mono">--magenta</span><br><span class="t-small t-dim">#ff3d81 · critical</span></figcaption></figure>
+      <figure class="swatch"><i style="background:var(--text-body)"></i><figcaption><span class="t-mono">--text-body</span><br><span class="t-small t-dim">#9fb3c7</span></figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ====== Three-tier system ====== -->
+  <section class="lib-section">
+    <span class="t-micro">02 · Three-tier semantic system (icon + label, never color alone)</span>
+    <div class="specimen-row">
+      <span class="tier tier--nominal"><svg class="ico"><use href="icons.svg#i-nominal"/></svg>Nominal</span>
+      <span class="tier tier--threat"><svg class="ico"><use href="icons.svg#i-threat"/></svg>Threat detected</span>
+      <span class="tier tier--critical"><svg class="ico"><use href="icons.svg#i-critical"/></svg>Critical</span>
+      <span class="row t-small"><span class="dot dot--nominal"></span>Nominal</span>
+      <span class="row t-small"><span class="dot dot--threat"></span>Detected threat</span>
+      <span class="row t-small"><span class="dot dot--critical"></span>Critical alert</span>
+    </div>
+  </section>
+
+  <!-- ====== Type ====== -->
+  <section class="lib-section">
+    <span class="t-micro">03 · Type scale</span>
+    <div class="stack-4">
+      <p class="t-display-xl">The autonomous security analyst you can actually trust to act.</p>
+      <p class="t-display">Display — Space Grotesk semibold</p>
+      <p class="t-h1">H1 — Governed autonomy, earned per capability</p>
+      <p class="t-h2">H2 — Three intelligence engines</p>
+      <p class="t-h3">H3 — Impossible-travel detection</p>
+      <p class="t-body" style="max-width:42rem">Body — ARIA watches your environment, explains the risk in plain language, and contains threats — under autonomy you bound and audit. Sentence case for all prose.</p>
+      <p class="t-mono">MONO DATA — 14px · telemetry · 0.97 trust · 80 samples · ≤1 override</p>
+      <p class="t-micro">HUD MICRO-LABEL · 11PX MONO · 0.18EM TRACKING</p>
+    </div>
+  </section>
+
+  <!-- ====== Buttons ====== -->
+  <section class="lib-section">
+    <span class="t-micro">04 · Buttons</span>
+    <div class="specimen-row">
+      <button class="btn btn--primary">Request a 14-day trial</button>
+      <button class="btn btn--ghost"><svg class="ico"><use href="icons.svg#i-play"/></svg>Watch the 90-second demo</button>
+      <button class="btn btn--quiet">Talk to the founder</button>
+      <button class="btn-rail" aria-label="Enable voice"><svg class="ico"><use href="icons.svg#i-mic"/></svg></button>
+      <button class="btn-rail" aria-pressed="true" aria-label="Guided tour active"><svg class="ico"><use href="icons.svg#i-tour"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ====== HUD chrome ====== -->
+  <section class="lib-section">
+    <span class="t-micro">05 · HUD chrome — top bar · status stack · control rail</span>
+    <div class="demo-frame">
+      <header class="hud-top">
+        <span class="hud-brand"><span class="mark"></span>ARIA</span>
+        <nav class="hud-nav" aria-label="Sectors">
+          <a href="#" aria-current="page">Cockpit</a><a href="#">About</a><a href="#">Platform</a><a href="#">Demo</a><a href="#">Investors</a><a href="#">Trial</a><a href="#">Contact</a>
+        </nav>
+        <button class="btn btn--primary" style="min-height:2.25rem">Request trial</button>
+      </header>
+      <aside class="hud-stack" aria-label="System status">
+        <div class="row"><span class="t-micro">System</span><b><span class="dot dot--nominal"></span>Online</b></div>
+        <div class="row"><span class="t-micro">Threat level</span><b><span class="dot dot--threat"></span>Elevated</b></div>
+        <div class="row"><span class="t-micro">Mode</span><b>Approval</b></div>
+        <div class="row"><span class="t-micro">Review</span><b>3 pending</b></div>
+      </aside>
+      <aside class="hud-rail" aria-label="Controls">
+        <button class="btn-rail" aria-label="Command console"><svg class="ico"><use href="icons.svg#i-console"/></svg></button>
+        <button class="btn-rail" aria-label="Voice mode"><svg class="ico"><use href="icons.svg#i-mic"/></svg></button>
+        <button class="btn-rail" aria-label="Audio alerts"><svg class="ico"><use href="icons.svg#i-audio-on"/></svg></button>
+        <button class="btn-rail" aria-label="Guided tour"><svg class="ico"><use href="icons.svg#i-tour"/></svg></button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ====== Console ====== -->
+  <section class="lib-section">
+    <span class="t-micro">06 · Command console</span>
+    <div class="demo-frame">
+      <div class="console"><span class="prompt">›</span><input placeholder="show me AI-SPM · what is the trust ladder · open identity" aria-label="Command console"><span class="hint">⏎ to route</span></div>
+    </div>
+  </section>
+
+  <!-- ====== Galaxy nodes ====== -->
+  <section class="lib-section">
+    <span class="t-micro">07 · Galaxy nodes (sector hubs) — hover for magnetic pull + callout</span>
+    <div class="demo-frame">
+      <div class="nodes-row">
+        <button class="node" style="--accent:var(--sector-threat)"><span class="node-callout">Threat intel cluster</span><span class="node-label">Threat Intel</span></button>
+        <button class="node" style="--accent:var(--sector-network)"><span class="node-callout">Connection map</span><span class="node-label">Network &amp; Access</span></button>
+        <button class="node" style="--accent:var(--sector-command)"><span class="node-callout">Command intelligence core</span><span class="node-label">Command</span></button>
+        <button class="node" style="--accent:var(--sector-response)"><span class="node-callout">Containment protocols</span><span class="node-label">Response</span></button>
+        <button class="node" style="--accent:var(--sector-identity)"><span class="node-callout">Identity galaxy online</span><span class="node-label">Identity &amp; Access</span></button>
+      </div>
+      <div style="text-align:center; padding-bottom:var(--sp-5)"><span class="arrival"><svg class="ico"><use href="icons.svg#i-warp"/></svg>AI posture mapped</span></div>
+    </div>
+  </section>
+
+  <!-- ====== Cards & panels ====== -->
+  <section class="lib-section">
+    <span class="t-micro">08 · Panels &amp; cards</span>
+    <div class="grid grid--3">
+      <div class="card" data-accent style="--accent:var(--teal)">
+        <svg class="ico" style="color:var(--teal)"><use href="icons.svg#i-aispm"/></svg>
+        <h3 class="t-h3" style="margin-top:var(--sp-3)">AI-SPM</h3>
+        <p class="t-small">Discovers every model, prompt, secret, and cloud asset — then maps the attack path and blast radius.</p>
+        <button class="fom"><span class="fom-ring"><svg class="ico"><use href="icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="t-micro">Live posture</span><span class="tier tier--threat"><svg class="ico"><use href="icons.svg#i-threat"/></svg>Elevated</span></div>
+        <p class="t-mono" style="color:var(--text-bright)">sources 612 · approvals 3 · trust 0.84</p>
+        <p class="t-small t-dim" style="margin:var(--sp-2) 0 0">Glass panel — backdrop blur 14px, hairline border.</p>
+      </div>
+      <div class="card">
+        <h3 class="t-h3">Plain card</h3>
+        <p class="t-small">Hover: hairline brightens to cyan, soft glow, −2px lift.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Narration / captions / player ====== -->
+  <section class="lib-section">
+    <span class="t-micro">09 · Narration — find-out-more states · caption bar · player</span>
+    <div class="demo-frame stack-4">
+      <div class="specimen-row">
+        <button class="fom"><span class="fom-ring"><svg class="ico"><use href="icons.svg#i-play"/></svg></span>Find out more — ARIA narrates</button>
+        <button class="fom fom--playing"><span class="fom-ring"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span></span>Playing · tap to pause</button>
+      </div>
+      <div class="captions"><span class="speaker">ARIA</span>I never act beyond the trust you grant me. Every decision is scored. Every action is audited.</div>
+      <div class="player">
+        <button class="btn-rail" aria-label="Pause narration"><svg class="ico"><use href="icons.svg#i-pause"/></svg></button>
+        <div class="progress" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><i></i></div>
+        <time>1:48 / 2:54</time>
+        <button class="btn-rail" aria-label="Toggle captions"><svg class="ico"><use href="icons.svg#i-captions"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Forms ====== -->
+  <section class="lib-section">
+    <span class="t-micro">10 · Form fields · notices</span>
+    <div class="grid grid--2">
+      <div class="panel stack-4">
+        <div class="field"><label for="d-name">Full name <span class="req" aria-hidden="true">*</span></label><input class="input" id="d-name" placeholder="Adel Rahimi"></div>
+        <div class="field"><label for="d-int">Primary interest</label>
+          <select class="select" id="d-int"><option>AI-SPM</option><option>Autonomous SOC</option><option>Identity / ITDR</option><option>Just evaluating</option></select></div>
+        <div class="field field--error"><label for="d-mail">Work email <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="d-mail" value="adel@" aria-invalid="true" aria-describedby="d-mail-err">
+          <span class="field-error" id="d-mail-err"><svg class="ico" style="width:0.9rem;height:0.9rem"><use href="icons.svg#i-threat"/></svg>Enter a valid work email.</span></div>
+        <label class="checkline"><input type="checkbox" checked><span>I agree to be contacted about my trial request.</span></label>
+      </div>
+      <div class="stack-4">
+        <div class="notice notice--ok"><svg class="ico"><use href="icons.svg#i-check"/></svg><div><b>Your request is in.</b><p>We'll email your 14-day license key within 1 business day.</p></div></div>
+        <div class="notice notice--err"><svg class="ico"><use href="icons.svg#i-critical"/></svg><div><b>That didn't go through.</b><p>Check the highlighted fields, or email sary@aria-sec.com directly.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Modal ====== -->
+  <section class="lib-section">
+    <span class="t-micro">11 · Modal</span>
+    <div class="demo-frame" style="display:grid; place-items:center; min-height:18rem">
+      <div class="modal stack-4" role="dialog" aria-labelledby="m-title">
+        <span class="t-micro t-micro--accent">Investor access</span>
+        <h3 class="t-h2" id="m-title">Request the deck &amp; data room</h3>
+        <p class="t-small">We'll reply from the founder's desk — usually same day.</p>
+        <div class="field"><label for="m-mail">Work email</label><input class="input" id="m-mail" placeholder="you@fund.com"></div>
+        <div class="row"><button class="btn btn--primary">Request access</button><button class="btn btn--quiet">Cancel</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

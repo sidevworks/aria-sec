@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA Demo — ninety seconds, narrated by ARIA itself</title>
+<meta name="description" content="Watch ARIA discover AI exposure, catch an impossible-travel login, contain it, and explain the trust ladder — in ninety seconds, in its own voice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: var(--hairline);
+    background:
+      radial-gradient(60% 70% at 50% 45%, rgba(99,245,255,0.08), transparent 70%),
+      var(--bg-deep);
+    box-shadow: var(--shadow-panel);
+  }
+  /* Desktop: live WebGL demo mounts here. Mobile/low-power: the rendered
+     video loop (media/demo-loop.mp4, §15a prompt pack) plays instead. */
+  .stage .play-veil {
+    position:absolute; inset:0; display:grid; place-items:center;
+    background: linear-gradient(180deg, transparent 40%, rgba(4,6,13,0.7));
+  }
+  .stage .big-play {
+    width: 5rem; height: 5rem; border-radius:50%;
+    display:grid; place-items:center;
+    background: rgba(99,245,255,0.1);
+    border: 1px solid rgba(99,245,255,0.55);
+    color: var(--cyan); cursor:pointer;
+    box-shadow: var(--glow-md);
+    transition: transform var(--t-ui) var(--ease-settle), box-shadow var(--t-ui);
+  }
+  .stage .big-play:hover { transform: scale(1.08); box-shadow: var(--glow-lg); }
+  .stage .big-play .ico { width:1.8rem; height:1.8rem; }
+  .stage .stage-captions {
+    position:absolute; left:50%; bottom: var(--sp-4); transform: translateX(-50%);
+    width: min(85%, 38rem); text-align:center;
+    background: rgba(4,6,13,0.85); border: var(--hairline-dim); border-radius: var(--r-ctl);
+    padding: var(--sp-2) var(--sp-4); color: var(--text-bright);
+  }
+  .beat-list { counter-reset: beat; }
+  .beat-row { display:flex; gap: var(--sp-4); padding: var(--sp-4); border-radius: var(--r-panel); border: var(--hairline-dim); }
+  .beat-row + .beat-row { margin-top: var(--sp-3); }
+  .beat-row.live { border-color: rgba(99,245,255,0.5); box-shadow: var(--glow-sm); }
+  .beat-row .n {
+    flex:none; width:2rem; height:2rem; border-radius:50%;
+    display:grid; place-items:center;
+    border:1px solid rgba(99,245,255,0.45); color: var(--cyan);
+    font-family: var(--font-mono); font-size: var(--fs-small);
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html" aria-current="page">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<aside class="hud-rail" aria-label="Controls">
+  <button class="btn-rail" aria-label="Open command console"><svg class="ico"><use href="../icons.svg#i-console"/></svg></button>
+  <button class="btn-rail" aria-label="Enable voice mode"><svg class="ico"><use href="../icons.svg#i-mic"/></svg></button>
+  <button class="btn-rail" aria-pressed="true" aria-label="Captions on"><svg class="ico"><use href="../icons.svg#i-captions"/></svg></button>
+  <button class="btn-rail" aria-label="Audio on or off"><svg class="ico"><use href="../icons.svg#i-audio-off"/></svg></button>
+</aside>
+
+<main class="page container" id="main" data-warp="dive">
+  <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Demo chamber open</span>
+
+  <section class="section" style="margin-top:var(--sp-6)">
+    <div class="section-head">
+      <span class="t-micro t-micro--accent">The 90-second demo</span>
+      <h1 class="t-display" style="margin-top:var(--sp-3)">Watch me work.</h1>
+      <p>Narrated by ARIA in its own voice. Six beats, each synced to the visuals. Captions on by default on mobile.</p>
+    </div>
+
+    <div class="stage" role="region" aria-label="Interactive demo player">
+      <div class="play-veil">
+        <button class="big-play" aria-label="Play the 90-second demo" data-audio="/audio/demo-b1.mp3">
+          <svg class="ico"><use href="../icons.svg#i-play"/></svg>
+        </button>
+        <div class="stage-captions"><span class="t-micro t-micro--accent" style="display:block">ARIA</span>I am ARIA — Autonomous Resilience Intelligence Architecture. Let me show you — in ninety seconds.</div>
+      </div>
+    </div>
+
+    <!-- player chrome -->
+    <div class="player" style="margin-top:var(--sp-4)">
+      <button class="btn-rail" aria-label="Play"><svg class="ico"><use href="../icons.svg#i-play"/></svg></button>
+      <span class="beats" style="display:flex; gap:var(--sp-2)" aria-label="Beat 1 of 6">
+        <i class="beat beat--live" style="width:1.6rem;height:3px;border-radius:2px;background:var(--cyan)"></i>
+        <i class="beat" style="width:1.6rem;height:3px;border-radius:2px;background:rgba(159,179,199,0.3)"></i>
+        <i class="beat" style="width:1.6rem;height:3px;border-radius:2px;background:rgba(159,179,199,0.3)"></i>
+        <i class="beat" style="width:1.6rem;height:3px;border-radius:2px;background:rgba(159,179,199,0.3)"></i>
+        <i class="beat" style="width:1.6rem;height:3px;border-radius:2px;background:rgba(159,179,199,0.3)"></i>
+        <i class="beat" style="width:1.6rem;height:3px;border-radius:2px;background:rgba(159,179,199,0.3)"></i>
+      </span>
+      <div class="progress" role="progressbar" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"><i style="right:92%"></i></div>
+      <time>0:07 / 1:31</time>
+      <button class="btn-rail" aria-pressed="true" aria-label="Captions on"><svg class="ico"><use href="../icons.svg#i-captions"/></svg></button>
+      <button class="btn-rail" aria-label="Mute"><svg class="ico"><use href="../icons.svg#i-audio-on"/></svg></button>
+    </div>
+  </section>
+
+  <!-- beats / storyboard (crawlable; doubles as transcript access) -->
+  <section class="section">
+    <div class="section-head"><span class="t-micro">The six beats</span></div>
+    <div class="beat-list">
+      <div class="beat-row live"><span class="n">1</span><div><b class="t-h3">Galaxy forms</b><p class="t-small" style="margin:0">"I watch your environment, explain the risk, and act on it — under autonomy you control."</p></div></div>
+      <div class="beat-row"><span class="n">2</span><div><b class="t-h3">One interface</b><p class="t-small" style="margin:0">"Each sector is a galaxy; each node, a live capability. Speak, click, or let me take you there."</p></div></div>
+      <div class="beat-row"><span class="n">3</span><div><b class="t-h3">AI-SPM — the exposure graph</b><p class="t-small" style="margin:0">"I discover every model, prompt, secret, and cloud asset, then map the exact attack path and blast radius."</p></div></div>
+      <div class="beat-row"><span class="n">4</span><div><b class="t-h3">Impossible travel — contained</b><p class="t-small" style="margin:0">"A login from two continents at once — I catch it, and I can contain it instantly. One decision. Milliseconds. Logged."</p></div></div>
+      <div class="beat-row"><span class="n">5</span><div><b class="t-h3">The trust ladder</b><p class="t-small" style="margin:0">"I never act beyond the trust you grant me. Every decision scored, every action audited."</p></div></div>
+      <div class="beat-row"><span class="n">6</span><div><b class="t-h3">Your move</b><p class="t-small" style="margin:0">"Take the guided tour — or request a fourteen-day trial and see me run on your world."</p></div></div>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center">
+    <h2 class="t-h1">Want the controls?</h2>
+    <p>Drop into the free-roam galaxy and explore every sector yourself.</p>
+    <div class="hero cta-row" style="justify-content:center">
+      <a class="btn btn--ghost" href="home.html"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Take control</a>
+      <a class="btn btn--primary" href="trial.html">Request a 14-day trial</a>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="replay beat four · open the trust ladder" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

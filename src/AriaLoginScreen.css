@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+.aria-lg {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 28% 18%, rgba(28, 8, 72, 0.95) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(6, 12, 40, 0.9) 0%, transparent 50%),
+    radial-gradient(ellipse at center, #080520 0%, #030307 55%, #010108 100%);
+  opacity: 0;
+  transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aria-lg--enter  { opacity: 0; }
+.aria-lg--idle   { opacity: 1; }
+.aria-lg--exit   { opacity: 0; pointer-events: none; }
+
+/* Canvas */
+.aria-lg__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Corner brackets */
+.aria-lg__corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  opacity: 0;
+  animation: lg-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+.aria-lg__corner--tl { top: 22px;    left: 22px;    border-top:    1.5px solid #63f5ff; border-left:   1.5px solid #63f5ff; }
+.aria-lg__corner--tr { top: 22px;    right: 22px;   border-top:    1.5px solid #63f5ff; border-right:  1.5px solid #63f5ff; }
+.aria-lg__corner--bl { bottom: 22px; left: 22px;    border-bottom: 1.5px solid #63f5ff; border-left:   1.5px solid #63f5ff; }
+.aria-lg__corner--br { bottom: 22px; right: 22px;   border-bottom: 1.5px solid #63f5ff; border-right:  1.5px solid #63f5ff; }
+
+/* Horizontal scan line sweeping top → bottom */
+.aria-lg__scanline {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(99,245,255,0.35) 30%, #eaf7ff 50%, rgba(99,245,255,0.35) 70%, transparent 100%);
+  box-shadow: 0 0 12px 2px rgba(99,245,255,0.4);
+  animation: lg-scanline 6s linear 1.2s infinite;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Center layout */
+.aria-lg__center {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  width: min(440px, 92vw);
+}
+
+/* Logo block */
+.aria-lg__logo-wrap {
+  text-align: center;
+  opacity: 0;
+  animation: lg-fade-up 0.6s ease 0.4s forwards;
+}
+
+.aria-lg__eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.46em;
+  color: #63f5ff;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.aria-lg__title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  color: #eaf7ff;
+  margin: 0 0 0.3rem;
+  text-shadow:
+    0 0 16px rgba(99,245,255,0.65),
+    0 0 40px rgba(99,245,255,0.25),
+    0 0 80px rgba(139,92,246,0.2);
+}
+
+.aria-lg__tagline {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.3em;
+  color: rgba(99,245,255,0.45);
+  margin: 0;
+}
+
+/* Boot log */
+.aria-lg__boot-log {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  opacity: 0;
+  animation: lg-fade-up 0.5s ease 0.7s forwards;
+}
+
+.aria-lg__boot-line {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: rgba(139,92,246,0.75);
+  margin: 0;
+  animation: lg-line-in 0.25s ease forwards;
+}
+.aria-lg__boot-line::before { content: '> '; color: rgba(99,245,255,0.5); }
+
+/* Auth card */
+.aria-lg__card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(8, 5, 32, 0.72);
+  border: 1px solid rgba(99,245,255,0.18);
+  border-radius: 4px;
+  padding: 1.8rem 2rem;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgba(99,245,255,0.06),
+    0 8px 40px rgba(0,0,0,0.6),
+    inset 0 0 24px rgba(99,245,255,0.03);
+  opacity: 0;
+  animation: lg-fade-up 0.6s ease 1.0s forwards;
+}
+
+.aria-lg__card-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.38em;
+  color: rgba(99,245,255,0.55);
+  text-align: center;
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+}
+
+.aria-lg__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.aria-lg__field-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.3em;
+  color: rgba(99,245,255,0.45);
+}
+
+.aria-lg__input {
+  background: rgba(3, 3, 18, 0.7);
+  border: 1px solid rgba(99,245,255,0.22);
+  border-radius: 3px;
+  color: #eaf7ff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  padding: 0.65rem 0.85rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  caret-color: #63f5ff;
+}
+.aria-lg__input::placeholder { color: rgba(99,245,255,0.2); }
+.aria-lg__input:focus {
+  border-color: rgba(99,245,255,0.55);
+  box-shadow: 0 0 0 2px rgba(99,245,255,0.08), 0 0 12px rgba(99,245,255,0.15);
+}
+
+.aria-lg__error {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: #ff4f6a;
+  margin: -0.2rem 0 0;
+  animation: lg-fade-up 0.3s ease forwards;
+}
+
+.aria-lg__btn {
+  margin-top: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(99,245,255,0.45);
+  border-radius: 3px;
+  color: #63f5ff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.aria-lg__btn:hover:not(:disabled) {
+  background: rgba(99,245,255,0.08);
+  border-color: #63f5ff;
+  box-shadow: 0 0 18px rgba(99,245,255,0.25), inset 0 0 12px rgba(99,245,255,0.06);
+}
+.aria-lg__btn:active:not(:disabled) { background: rgba(99,245,255,0.14); }
+.aria-lg__btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.aria-lg__btn--loading::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #63f5ff, transparent);
+  animation: lg-btn-scan 1s linear infinite;
+}
+
+/* Footer */
+.aria-lg__footer {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(99,245,255,0.2);
+  margin: 0;
+  text-align: center;
+  opacity: 0;
+  animation: lg-fade-up 0.5s ease 1.4s forwards;
+}
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes lg-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lg-line-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes lg-scanline {
+  0%   { top: -2px;  opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100vh; opacity: 0; }
+}
+
+@keyframes lg-btn-scan {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}

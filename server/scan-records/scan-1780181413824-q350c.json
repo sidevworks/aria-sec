@@ -1,0 +1,85 @@
+{
+  "id": "scan-1780181413824-q350c",
+  "depth": "standard",
+  "target": "local-host",
+  "status": "complete",
+  "started_at": "2026-05-30T22:50:13.824Z",
+  "completed_at": "2026-05-30T22:50:21.108Z",
+  "duration_ms": 7284,
+  "findings": [
+    {
+      "severity": "critical",
+      "summary": "Memory pressure is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "Disk capacity is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "2 critical incidents active — immediate response required",
+      "source": "incident-engine"
+    }
+  ],
+  "phases": [
+    {
+      "phase": "init",
+      "message": "Initialising scan engine",
+      "ts": "2026-05-30T22:50:14.025Z"
+    },
+    {
+      "phase": "network",
+      "message": "Probing network perimeter",
+      "ts": "2026-05-30T22:50:14.727Z"
+    },
+    {
+      "phase": "hosts",
+      "message": "Enumerating live hosts",
+      "ts": "2026-05-30T22:50:15.629Z"
+    },
+    {
+      "phase": "ports",
+      "message": "Sweeping open ports",
+      "ts": "2026-05-30T22:50:16.730Z"
+    },
+    {
+      "phase": "services",
+      "message": "Fingerprinting services",
+      "ts": "2026-05-30T22:50:17.732Z"
+    },
+    {
+      "phase": "auth",
+      "message": "Checking auth surface",
+      "ts": "2026-05-30T22:50:18.666Z"
+    },
+    {
+      "phase": "policy",
+      "message": "Evaluating policy compliance",
+      "ts": "2026-05-30T22:50:19.466Z"
+    },
+    {
+      "phase": "ai-spm",
+      "message": "Scanning AI asset exposure",
+      "ts": "2026-05-30T22:50:20.367Z"
+    },
+    {
+      "phase": "findings",
+      "message": "Correlating findings",
+      "ts": "2026-05-30T22:50:20.767Z"
+    },
+    {
+      "phase": "done",
+      "message": "Scan complete",
+      "ts": "2026-05-30T22:50:20.968Z"
+    }
+  ],
+  "snapshot_summary": {
+    "risk_score": 0,
+    "severity": "critical",
+    "sources": 9,
+    "connections": 0,
+    "incidents": 2
+  }
+}

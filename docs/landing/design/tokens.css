@@ -1,0 +1,148 @@
+/* ============================================================
+   ARIA — Landing Site Design Tokens
+   Source of truth: docs/landing/ARIA-LANDING-BRIEF.md §2
+   This file is the consumable token export for the build phase.
+   Import it before aria-ui.css.
+   ============================================================ */
+
+:root {
+  /* ---------- Color · backgrounds ---------- */
+  --bg-space:        #06080f;   /* primary page background */
+  --bg-deep:         #04060d;   /* deepest backdrop, boot, behind galaxy */
+  --ink-panel:       #0a0e1a;   /* panel surfaces */
+  --ink-deep:        #070b15;   /* chrome, rails, console */
+
+  /* ---------- Color · accents (exact, from brief) ---------- */
+  --cyan:            #63f5ff;   /* signature — ARIA voice, primary CTAs */
+  --teal:            #2dd4bf;   /* healthy / nominal / AI-SPM */
+  --sky:             #38bdf8;   /* identity */
+  --blue:            #1687ff;   /* network */
+  --violet:          #a78bfa;   /* command / intelligence */
+  --violet-deep:     #8b5cf6;
+  --amber:           #ffc857;   /* warning tier */
+  --magenta:         #ff3d81;   /* critical tier, containment */
+
+  /* ---------- Color · text ---------- */
+  --text-bright:     #eaf6ff;   /* headings, key lines */
+  --text-body:       #9fb3c7;   /* body / secondary (muted slate) */
+  --text-dim:        #5f7184;   /* tertiary, footers, hints */
+  --text-on-accent:  #04121a;   /* text on cyan-filled controls */
+
+  /* ---------- Color · three-tier semantic system ----------
+     blue = nominal · amber = detected threat · magenta = critical.
+     NEVER color-only: pair with .ico-nominal/.ico-threat/.ico-critical
+     and a text label (see aria-ui.css .tier). */
+  --tier-nominal:    var(--blue);
+  --tier-nominal-soft: rgba(22, 135, 255, 0.16);
+  --tier-threat:     var(--amber);
+  --tier-threat-soft:  rgba(255, 200, 87, 0.14);
+  --tier-critical:   var(--magenta);
+  --tier-critical-soft: rgba(255, 61, 129, 0.16);
+
+  /* ---------- Sector accent mapping ---------- */
+  --sector-threat:   var(--amber);     /* Threat Intel */
+  --sector-network:  var(--blue);      /* Network & Access */
+  --sector-command:  var(--violet);    /* Command (AI-SPM, Decision Engine) */
+  --sector-response: var(--magenta);   /* Response */
+  --sector-identity: var(--sky);       /* Identity & Access */
+  --sector-aispm:    var(--teal);      /* AI-SPM node accent */
+
+  /* ---------- Typography ---------- */
+  /* Display: Space Grotesk. Mono: JetBrains Mono. Both with safe stacks. */
+  --font-display: "Space Grotesk", "Inter Tight", "SF Pro Display",
+                  -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "JetBrains Mono", "SF Mono", "Menlo", "Roboto Mono", monospace;
+
+  /* Type scale (px values via rem; root = 16px) */
+  --fs-display-xl:  clamp(2.5rem, 6vw, 4.25rem);  /* 40→68 hero headline */
+  --fs-display:     clamp(2rem, 4.2vw, 3rem);     /* 32→48 page titles   */
+  --fs-h1:          2rem;      /* 32 */
+  --fs-h2:          1.5rem;    /* 24 */
+  --fs-h3:          1.125rem;  /* 18 */
+  --fs-body:        1rem;      /* 16 */
+  --fs-small:       0.875rem;  /* 14 */
+  --fs-micro:       0.6875rem; /* 11 — HUD micro-labels, mono only */
+
+  --lh-tight:  1.08;   /* display */
+  --lh-head:   1.2;    /* h1–h3 */
+  --lh-body:   1.65;   /* prose */
+  --lh-mono:   1.5;
+
+  --ls-display: -0.02em;
+  --ls-micro:    0.18em;  /* uppercase mono micro-labels */
+  --ls-label:    0.12em;  /* uppercase buttons / nav */
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --sp-1:  0.25rem;   /*  4 */
+  --sp-2:  0.5rem;    /*  8 */
+  --sp-3:  0.75rem;   /* 12 */
+  --sp-4:  1rem;      /* 16 */
+  --sp-5:  1.5rem;    /* 24 */
+  --sp-6:  2rem;      /* 32 */
+  --sp-7:  3rem;      /* 48 */
+  --sp-8:  4rem;      /* 64 */
+  --sp-9:  6rem;      /* 96 */
+
+  /* ---------- Layout ---------- */
+  --container-max:   72rem;    /* 1152 content column */
+  --container-wide:  86rem;    /* 1376 full-bleed sections */
+  --hud-topbar-h:    3.5rem;   /* 56 persistent top sector bar */
+  --hud-rail-w:      3.75rem;  /* 60 right control rail */
+  --hud-stack-w:     13.75rem; /* 220 left status stack */
+  --console-h:       2.75rem;  /* 44 command console bar */
+  --cta-thumb-h:     3.25rem;  /* 52 mobile thumb-CTA */
+
+  /* ---------- Radii ---------- */
+  --r-chip:   0.25rem;  /*  4 badges, micro-chips */
+  --r-ctl:    0.5rem;   /*  8 inputs, console */
+  --r-panel:  0.75rem;  /* 12 panels, cards */
+  --r-card:   1rem;     /* 16 feature cards, modals */
+  --r-pill:   999px;
+
+  /* ---------- Borders (thin neon hairlines) ---------- */
+  --hairline:        1px solid rgba(99, 245, 255, 0.16);
+  --hairline-dim:    1px solid rgba(159, 179, 199, 0.12);
+  --hairline-strong: 1px solid rgba(99, 245, 255, 0.38);
+
+  /* ---------- Glow / elevation ---------- */
+  --glow-sm:  0 0 8px  rgba(99, 245, 255, 0.25);
+  --glow-md:  0 0 18px rgba(99, 245, 255, 0.30), 0 0 2px rgba(99, 245, 255, 0.5);
+  --glow-lg:  0 0 44px rgba(99, 245, 255, 0.32), 0 0 8px rgba(99, 245, 255, 0.45);
+  --glow-amber:   0 0 18px rgba(255, 200, 87, 0.35);
+  --glow-magenta: 0 0 18px rgba(255, 61, 129, 0.40);
+  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.55);
+
+  /* ---------- Glass ---------- */
+  --glass-bg:     rgba(10, 14, 26, 0.62);
+  --glass-blur:   blur(14px) saturate(1.15);
+
+  /* ---------- Motion ---------- */
+  --t-micro:   120ms;  /* hover ticks, focus, color */
+  --t-ui:      240ms;  /* buttons, badges, reveals */
+  --t-panel:   480ms;  /* panel open, modal */
+  --t-warp:    900ms;  /* destination transitions */
+  --t-cine:   1400ms;  /* boot, hero settle */
+
+  --ease-std:    cubic-bezier(0.22, 0.61, 0.36, 1);  /* default UI */
+  --ease-warp:   cubic-bezier(0.70, 0.00, 0.20, 1);  /* warp travel */
+  --ease-settle: cubic-bezier(0.16, 1.00, 0.30, 1);  /* arrival overshoot-settle */
+
+  /* ---------- Z-index ---------- */
+  --z-galaxy:   0;
+  --z-content:  10;
+  --z-hud:      40;
+  --z-console:  50;
+  --z-overlay:  80;   /* tour overlay, modals */
+  --z-boot:     100;
+  --z-captions: 90;
+}
+
+/* Focus ring — single source, applied via :focus-visible everywhere */
+:root {
+  --focus-ring: 0 0 0 2px var(--bg-space), 0 0 0 4px var(--cyan);
+}

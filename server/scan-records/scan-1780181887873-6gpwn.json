@@ -1,0 +1,100 @@
+{
+  "id": "scan-1780181887873-6gpwn",
+  "depth": "deep",
+  "target": "local-host",
+  "status": "complete",
+  "started_at": "2026-05-30T22:58:07.873Z",
+  "completed_at": "2026-05-30T22:58:19.710Z",
+  "duration_ms": 11837,
+  "findings": [
+    {
+      "severity": "critical",
+      "summary": "Memory pressure is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "Disk capacity is above the review threshold.",
+      "source": "live-policy"
+    },
+    {
+      "severity": "critical",
+      "summary": "2 critical incidents active — immediate response required",
+      "source": "incident-engine"
+    }
+  ],
+  "phases": [
+    {
+      "phase": "init",
+      "message": "Initialising deep scan engine",
+      "ts": "2026-05-30T22:58:08.075Z"
+    },
+    {
+      "phase": "network",
+      "message": "Deep network topology mapping",
+      "ts": "2026-05-30T22:58:08.874Z"
+    },
+    {
+      "phase": "hosts",
+      "message": "Full host enumeration",
+      "ts": "2026-05-30T22:58:09.875Z"
+    },
+    {
+      "phase": "ports",
+      "message": "Full port sweep (1–65535)",
+      "ts": "2026-05-30T22:58:11.077Z"
+    },
+    {
+      "phase": "services",
+      "message": "Service + version fingerprinting",
+      "ts": "2026-05-30T22:58:12.278Z"
+    },
+    {
+      "phase": "vulns",
+      "message": "CVE cross-reference check",
+      "ts": "2026-05-30T22:58:13.680Z"
+    },
+    {
+      "phase": "auth",
+      "message": "Deep auth + credential audit",
+      "ts": "2026-05-30T22:58:14.679Z"
+    },
+    {
+      "phase": "policy",
+      "message": "Policy + compliance delta analysis",
+      "ts": "2026-05-30T22:58:15.581Z"
+    },
+    {
+      "phase": "ai-spm",
+      "message": "AI asset exposure + model risk",
+      "ts": "2026-05-30T22:58:16.782Z"
+    },
+    {
+      "phase": "lateral",
+      "message": "Lateral movement path analysis",
+      "ts": "2026-05-30T22:58:17.783Z"
+    },
+    {
+      "phase": "exfil",
+      "message": "Data exfiltration surface scan",
+      "ts": "2026-05-30T22:58:18.784Z"
+    },
+    {
+      "phase": "findings",
+      "message": "Correlating + scoring findings",
+      "ts": "2026-05-30T22:58:19.386Z"
+    },
+    {
+      "phase": "done",
+      "message": "Deep scan complete",
+      "ts": "2026-05-30T22:58:19.586Z"
+    }
+  ],
+  "snapshot_summary": {
+    "risk_score": 0,
+    "severity": "critical",
+    "sources": 9,
+    "connections": 0,
+    "incidents": 2
+  }
+}

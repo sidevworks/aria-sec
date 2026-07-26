@@ -1,0 +1,431 @@
+:root {
+  --ccx-black: #01040a;
+  --ccx-black-2: #040914;
+  --ccx-black-3: #07111f;
+  --ccx-void: #00030a;
+  --ccx-electric: #1aa7ff;
+  --ccx-electric-2: #63e7ff;
+  --ccx-electric-3: #0077ff;
+  --ccx-text: #f4fbff;
+  --ccx-text-soft: rgba(244, 251, 255, 0.74);
+  --ccx-text-muted: rgba(244, 251, 255, 0.52);
+  --ccx-line: rgba(99, 231, 255, 0.26);
+  --ccx-line-strong: rgba(99, 231, 255, 0.48);
+  --ccx-surface: rgba(2, 8, 18, 0.86);
+  --ccx-surface-raised: rgba(7, 17, 31, 0.92);
+  --ccx-surface-glass: rgba(6, 20, 36, 0.68);
+  --ccx-shadow: 0 24px 70px rgba(0, 3, 10, 0.72);
+  --ccx-glow: 0 0 24px rgba(26, 167, 255, 0.42), 0 0 64px rgba(0, 119, 255, 0.22);
+  --ccx-danger: #ff3b5f;
+  --ccx-warning: #f5e663;
+  --ccx-success: #35f3b3;
+  --ccx-radius: 8px;
+  --ccx-radius-sm: 5px;
+  --ccx-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ccx-font-mono: "IBM Plex Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+}
+
+.ccx-command-center {
+  min-height: 100%;
+  color: var(--ccx-text);
+  font-family: var(--ccx-font-sans);
+  background:
+    radial-gradient(circle at 16% 12%, rgba(26, 167, 255, 0.28), transparent 30%),
+    radial-gradient(circle at 84% 18%, rgba(99, 231, 255, 0.18), transparent 28%),
+    linear-gradient(135deg, var(--ccx-black) 0%, var(--ccx-black-2) 52%, var(--ccx-void) 100%);
+}
+
+.ccx-command-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ccx-line);
+  border-radius: var(--ccx-radius);
+  background:
+    linear-gradient(180deg, rgba(99, 231, 255, 0.09), transparent 34%),
+    linear-gradient(135deg, rgba(2, 8, 18, 0.96), rgba(4, 13, 27, 0.92));
+  box-shadow: var(--ccx-shadow), inset 0 1px 0 rgba(244, 251, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(1.18);
+}
+
+.ccx-command-shell::before,
+.ccx-command-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.ccx-command-shell::before {
+  inset: 0;
+  background:
+    linear-gradient(rgba(99, 231, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 231, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 82%);
+}
+
+.ccx-command-shell::after {
+  inset: 10px;
+  border: 1px solid rgba(99, 231, 255, 0.16);
+  border-radius: calc(var(--ccx-radius) - 2px);
+}
+
+.ccx-shell-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(99, 231, 255, 0.18);
+}
+
+.ccx-shell-title {
+  margin: 0;
+  color: var(--ccx-text);
+  font: 700 0.9rem/1.15 var(--ccx-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(99, 231, 255, 0.42);
+}
+
+.ccx-shell-kicker,
+.ccx-label {
+  color: var(--ccx-text-muted);
+  font: 700 0.68rem/1.1 var(--ccx-font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ccx-shell-body {
+  position: relative;
+  z-index: 1;
+  padding: 18px;
+}
+
+.ccx-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--ccx-line);
+  border-radius: var(--ccx-radius);
+  background: var(--ccx-line);
+}
+
+.ccx-metric {
+  min-width: 0;
+  padding: 14px;
+  background:
+    linear-gradient(180deg, rgba(26, 167, 255, 0.14), rgba(2, 8, 18, 0.9)),
+    var(--ccx-surface);
+}
+
+.ccx-metric-value {
+  display: block;
+  margin-top: 8px;
+  color: var(--ccx-text);
+  font: 800 1.65rem/1 var(--ccx-font-mono);
+}
+
+.ccx-metric-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--ccx-electric-2);
+  font: 700 0.72rem/1 var(--ccx-font-mono);
+}
+
+.ccx-decision-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ccx-decision-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid rgba(99, 231, 255, 0.18);
+  border-radius: var(--ccx-radius-sm);
+  background: linear-gradient(90deg, rgba(26, 167, 255, 0.12), rgba(7, 17, 31, 0.8));
+}
+
+.ccx-decision-row[data-priority="critical"] {
+  border-color: rgba(255, 59, 95, 0.52);
+  box-shadow: inset 3px 0 0 var(--ccx-danger);
+}
+
+.ccx-decision-copy {
+  min-width: 0;
+}
+
+.ccx-decision-title {
+  margin: 0;
+  color: var(--ccx-text);
+  font: 700 0.9rem/1.25 var(--ccx-font-sans);
+}
+
+.ccx-decision-meta {
+  margin-top: 5px;
+  color: var(--ccx-text-muted);
+  font: 600 0.72rem/1.35 var(--ccx-font-mono);
+}
+
+.ccx-incident-workbench {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.95fr) minmax(320px, 1.45fr);
+  gap: 14px;
+}
+
+.ccx-workbench-panel,
+.ccx-evidence-chain,
+.ccx-attack-path,
+.ccx-executive-risk-panel {
+  border: 1px solid var(--ccx-line);
+  border-radius: var(--ccx-radius);
+  background: var(--ccx-surface-glass);
+  box-shadow: inset 0 1px 0 rgba(244, 251, 255, 0.07);
+}
+
+.ccx-workbench-panel {
+  padding: 14px;
+}
+
+.ccx-workbench-panel[data-state="active"] {
+  border-color: var(--ccx-line-strong);
+  box-shadow: var(--ccx-glow), inset 0 1px 0 rgba(244, 251, 255, 0.08);
+}
+
+.ccx-evidence-chain {
+  display: grid;
+  gap: 0;
+  padding: 8px;
+}
+
+.ccx-evidence-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 11px 8px;
+  color: var(--ccx-text-soft);
+}
+
+.ccx-evidence-item::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  margin-top: 4px;
+  border: 1px solid var(--ccx-electric-2);
+  border-radius: 999px;
+  background: var(--ccx-black);
+  box-shadow: 0 0 14px rgba(99, 231, 255, 0.74);
+}
+
+.ccx-evidence-item + .ccx-evidence-item {
+  border-top: 1px solid rgba(99, 231, 255, 0.13);
+}
+
+.ccx-evidence-hash {
+  color: var(--ccx-text-muted);
+  font: 700 0.68rem/1.2 var(--ccx-font-mono);
+}
+
+.ccx-attack-path {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 12px;
+}
+
+.ccx-attack-node {
+  position: relative;
+  flex: 0 0 150px;
+  min-height: 86px;
+  padding: 12px;
+  border: 1px solid rgba(99, 231, 255, 0.24);
+  border-radius: var(--ccx-radius-sm);
+  background: linear-gradient(180deg, rgba(26, 167, 255, 0.13), rgba(0, 3, 10, 0.86));
+}
+
+.ccx-attack-node + .ccx-attack-node::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -11px;
+  width: 11px;
+  height: 1px;
+  background: var(--ccx-electric-2);
+  box-shadow: 0 0 12px rgba(99, 231, 255, 0.78);
+}
+
+.ccx-attack-node[data-state="compromised"] {
+  border-color: rgba(255, 59, 95, 0.62);
+  background: linear-gradient(180deg, rgba(255, 59, 95, 0.16), rgba(0, 3, 10, 0.88));
+}
+
+.ccx-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.ccx-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--ccx-line-strong);
+  border-radius: var(--ccx-radius-sm);
+  color: var(--ccx-text);
+  background: linear-gradient(180deg, rgba(26, 167, 255, 0.24), rgba(0, 119, 255, 0.14));
+  box-shadow: 0 0 0 1px rgba(26, 167, 255, 0.12), 0 10px 30px rgba(0, 119, 255, 0.18);
+  font: 800 0.72rem/1 var(--ccx-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.ccx-action-button:hover {
+  border-color: var(--ccx-electric-2);
+  background: linear-gradient(180deg, rgba(99, 231, 255, 0.28), rgba(0, 119, 255, 0.2));
+  box-shadow: var(--ccx-glow);
+  transform: translateY(-1px);
+}
+
+.ccx-action-button:focus-visible {
+  outline: 2px solid var(--ccx-electric-2);
+  outline-offset: 2px;
+}
+
+.ccx-action-button[data-variant="danger"] {
+  border-color: rgba(255, 59, 95, 0.66);
+  background: linear-gradient(180deg, rgba(255, 59, 95, 0.22), rgba(255, 59, 95, 0.08));
+}
+
+.ccx-action-button[data-variant="ghost"] {
+  background: rgba(2, 8, 18, 0.36);
+  box-shadow: none;
+}
+
+.ccx-confidence-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 24px;
+  padding: 0 9px;
+  border: 1px solid rgba(99, 231, 255, 0.3);
+  border-radius: 999px;
+  color: var(--ccx-electric-2);
+  background: rgba(26, 167, 255, 0.1);
+  font: 800 0.66rem/1 var(--ccx-font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ccx-confidence-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.ccx-confidence-pill[data-confidence="high"] {
+  color: var(--ccx-success);
+}
+
+.ccx-confidence-pill[data-confidence="medium"] {
+  color: var(--ccx-warning);
+}
+
+.ccx-confidence-pill[data-confidence="low"] {
+  color: var(--ccx-danger);
+}
+
+.ccx-executive-risk-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.ccx-executive-risk-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(99, 231, 255, 0.16), transparent 38%);
+}
+
+.ccx-risk-score {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--ccx-text);
+  font-family: var(--ccx-font-mono);
+}
+
+.ccx-risk-score strong {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.9;
+}
+
+.ccx-risk-score span {
+  color: var(--ccx-text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ccx-risk-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.ccx-text-muted {
+  color: var(--ccx-text-muted);
+}
+
+.ccx-text-electric {
+  color: var(--ccx-electric-2);
+  text-shadow: 0 0 16px rgba(99, 231, 255, 0.48);
+}
+
+.ccx-border-glow {
+  border-color: var(--ccx-line-strong);
+  box-shadow: var(--ccx-glow);
+}
+
+@media (max-width: 760px) {
+  .ccx-decision-row,
+  .ccx-incident-workbench {
+    grid-template-columns: 1fr;
+  }
+
+  .ccx-shell-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ccx-incident-workbench {
+    display: grid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ccx-action-button {
+    transition: none;
+  }
+}

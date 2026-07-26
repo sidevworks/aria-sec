@@ -1,0 +1,257 @@
+.aria-evidence-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  justify-content: flex-end;
+  background:
+    linear-gradient(90deg, rgba(0, 3, 10, 0.16), rgba(0, 3, 10, 0.62)),
+    rgba(0, 3, 10, 0.18);
+  color: var(--cx-text, #eaf7ff);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.aria-evidence-drawer {
+  width: min(620px, calc(100vw - 24px));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid color-mix(in srgb, var(--aria-evidence-accent) 44%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--aria-evidence-accent) 12%, transparent), transparent 26%),
+    rgba(3, 6, 15, 0.94);
+  box-shadow:
+    -28px 0 76px rgba(0, 0, 0, 0.64),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(24px) saturate(1.18);
+  backdrop-filter: blur(24px) saturate(1.18);
+}
+
+.aria-evidence-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid rgba(234, 247, 255, 0.1);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--aria-evidence-accent) 18%, transparent), transparent);
+}
+
+.aria-evidence-header span,
+.aria-evidence-label,
+.aria-evidence-section-title {
+  color: rgba(234, 247, 255, 0.52);
+  font: 700 0.66rem/1.1 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.aria-evidence-header h2 {
+  margin: 6px 0 0;
+  color: #f4fbff;
+  font: 800 1rem/1.15 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 16px color-mix(in srgb, var(--aria-evidence-accent) 46%, transparent);
+}
+
+.aria-evidence-close {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(234, 247, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(234, 247, 255, 0.05);
+  color: rgba(234, 247, 255, 0.74);
+  cursor: pointer;
+  font: 800 0.72rem/1 ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.aria-evidence-close:hover,
+.aria-evidence-close:focus-visible {
+  border-color: color-mix(in srgb, var(--aria-evidence-accent) 64%, transparent);
+  color: #ffffff;
+  outline: none;
+}
+
+.aria-evidence-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px 24px;
+}
+
+.aria-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.aria-evidence-field,
+.aria-evidence-section,
+.aria-evidence-confidence {
+  border: 1px solid rgba(99, 245, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(4, 12, 24, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.aria-evidence-field {
+  min-width: 0;
+  padding: 12px;
+}
+
+.aria-evidence-field p {
+  margin: 7px 0 0;
+  color: rgba(244, 251, 255, 0.9);
+  font: 650 0.86rem/1.35 ui-monospace, "SF Mono", Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.aria-evidence-field[data-empty="true"] p,
+.aria-evidence-section[data-empty="true"] .aria-evidence-empty,
+.aria-evidence-confidence[data-empty="true"] strong {
+  color: rgba(234, 247, 255, 0.44);
+}
+
+.aria-evidence-confidence {
+  display: grid;
+  gap: 12px;
+  padding: 13px;
+}
+
+.aria-evidence-confidence > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aria-evidence-confidence strong {
+  color: var(--aria-evidence-accent);
+  font: 800 1.15rem/1 ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.aria-evidence-confidence-track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(234, 247, 255, 0.08);
+}
+
+.aria-evidence-confidence-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--aria-evidence-accent), #35f3b3);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--aria-evidence-accent) 44%, transparent);
+}
+
+.aria-evidence-section {
+  padding: 13px;
+}
+
+.aria-evidence-section-title {
+  margin-bottom: 10px;
+}
+
+.aria-evidence-list {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.aria-evidence-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(234, 247, 255, 0.08);
+}
+
+.aria-evidence-list li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.aria-evidence-list li:last-child {
+  padding-bottom: 0;
+}
+
+.aria-evidence-list strong {
+  display: block;
+  color: rgba(244, 251, 255, 0.9);
+  font: 750 0.82rem/1.25 ui-monospace, "SF Mono", Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.aria-evidence-list p {
+  margin: 4px 0 0;
+  color: rgba(234, 247, 255, 0.58);
+  font: 500 0.78rem/1.4 Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.aria-evidence-list span {
+  align-self: start;
+  color: color-mix(in srgb, var(--aria-evidence-accent) 78%, white);
+  font: 700 0.68rem/1.2 ui-monospace, "SF Mono", Menlo, monospace;
+  white-space: nowrap;
+}
+
+.aria-evidence-section-timeline .aria-evidence-list li,
+.aria-evidence-section-audit .aria-evidence-list li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.aria-evidence-section-timeline .aria-evidence-list li::before,
+.aria-evidence-section-audit .aria-evidence-list li::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--aria-evidence-accent);
+  border-radius: 999px;
+  background: rgba(3, 6, 15, 0.9);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--aria-evidence-accent) 56%, transparent);
+}
+
+.aria-evidence-empty {
+  padding: 11px 12px;
+  border: 1px dashed rgba(234, 247, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(234, 247, 255, 0.03);
+  font: 600 0.78rem/1.35 ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (max-width: 720px) {
+  .aria-evidence-backdrop {
+    justify-content: center;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .aria-evidence-drawer {
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--aria-evidence-accent) 32%, transparent);
+    border-radius: 8px;
+  }
+
+  .aria-evidence-grid,
+  .aria-evidence-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .aria-evidence-list span {
+    white-space: normal;
+  }
+}

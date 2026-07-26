@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA — Request a 14-day trial</title>
+<meta name="description" content="A 14-day full-feature free trial, license-key activated. We'll email your key within 1 business day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .trial-wrap { display:grid; grid-template-columns: 1.1fr 1fr; gap: var(--sp-7); align-items:start; }
+  @media (max-width:760px){ .trial-wrap { grid-template-columns:1fr; } }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap: var(--sp-4); }
+  @media (max-width:480px){ .field-row { grid-template-columns:1fr; } }
+  .keyline { display:flex; align-items:center; gap: var(--sp-3); }
+  .keyline .ico { color: var(--cyan); flex:none; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html" aria-current="page">Request trial</a>
+</header>
+
+<main class="page container" id="main" data-warp="drop">
+  <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Trial request channel open</span>
+
+  <div class="trial-wrap section" style="margin-top:var(--sp-6)">
+    <!-- Left: the offer -->
+    <div class="stack-4">
+      <span class="t-micro t-micro--accent">14-day free trial</span>
+      <h1 class="t-display">Run ARIA on your world.</h1>
+      <p class="t-body" style="font-size:var(--fs-h3)">Full-feature access, license-key activated. No card, no commitment — just the platform, on your environment.</p>
+      <div class="stack-2" style="margin-top:var(--sp-4)">
+        <p class="keyline t-small"><svg class="ico"><use href="../icons.svg#i-key"/></svg>Your license key arrives by email within 1 business day.</p>
+        <p class="keyline t-small"><svg class="ico"><use href="../icons.svg#i-aispm"/></svg>Every capability included — AI-SPM, identity galaxy, governed autonomy.</p>
+        <p class="keyline t-small"><svg class="ico"><use href="../icons.svg#i-lock"/></svg>Local engine available — nothing has to leave your network.</p>
+      </div>
+    </div>
+
+    <!-- Right: the form -->
+    <form class="panel stack-4" aria-describedby="trial-note">
+      <div class="field-row">
+        <div class="field"><label for="t-name">Full name <span class="req" aria-hidden="true">*</span></label><input class="input" id="t-name" autocomplete="name" required></div>
+        <div class="field"><label for="t-mail">Work email <span class="req" aria-hidden="true">*</span></label><input class="input" id="t-mail" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="t-co">Company <span class="req" aria-hidden="true">*</span></label><input class="input" id="t-co" autocomplete="organization" required></div>
+        <div class="field"><label for="t-role">Role / title</label><input class="input" id="t-role" autocomplete="organization-title"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="t-size">Company size</label>
+          <select class="select" id="t-size"><option>1–50</option><option>51–200</option><option>201–1,000</option><option>1,001–5,000</option><option>5,000+</option></select></div>
+        <div class="field"><label for="t-int">Primary interest</label>
+          <select class="select" id="t-int"><option>AI-SPM</option><option>Autonomous SOC</option><option>Identity / ITDR</option><option>Just evaluating</option></select></div>
+      </div>
+      <div class="field"><label for="t-how">How did you hear about ARIA?</label><input class="input" id="t-how"></div>
+      <div class="field"><label for="t-msg">Message</label><textarea class="textarea" id="t-msg" placeholder="Optional — your environment, your priorities"></textarea></div>
+      <!-- honeypot -->
+      <div class="field" style="position:absolute; left:-9999px" aria-hidden="true"><label for="t-web">Website</label><input class="input" id="t-web" tabindex="-1" autocomplete="off"></div>
+      <label class="checkline"><input type="checkbox" required><span>I agree to be contacted about my trial request. <span class="req" aria-hidden="true">*</span></span></label>
+      <button class="btn btn--primary btn--block" type="submit"><svg class="ico"><use href="../icons.svg#i-key"/></svg>Request my trial key</button>
+      <p class="t-small t-dim" id="trial-note" style="margin:0; text-align:center">We reply within 1 business day.</p>
+
+      <!-- designed states (build toggles visibility) -->
+      <div class="notice notice--ok" hidden id="trial-ok"><svg class="ico"><use href="../icons.svg#i-check"/></svg><div><b>Your request is in.</b><p>We'll email your 14-day license key within 1 business day.</p></div></div>
+      <div class="notice notice--err" hidden id="trial-err"><svg class="ico"><use href="../icons.svg#i-critical"/></svg><div><b>That didn't go through.</b><p>Check the highlighted fields, or email sary@aria-sec.com directly.</p></div></div>
+    </form>
+  </div>
+
+  <footer class="site-foot">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="what's included in the trial · open the demo" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

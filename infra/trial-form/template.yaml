@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ARIA landing trial/contact form. A public HTTPS endpoint (API Gateway HTTP API)
+  invokes a Lambda that validates the submission, stores it durably in DynamoDB,
+  and emails it to the team via SES. No always-on server, scales to zero.
+
+Parameters:
+  NotifyEmail:
+    Type: String
+    Default: sary@aria-sec.com
+    Description: Where trial submissions are emailed (must be SES-verified).
+  FromEmail:
+    Type: String
+    Default: sary@aria-sec.com
+    Description: Verified SES sender. Same as NotifyEmail is fine in the SES sandbox.
+  AllowOrigin:
+    Type: String
+    Default: https://www.aria-sec.com
+    Description: Primary CORS origin (the apex aria-sec.com is also allowed below).
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+  # Durable, queryable record of every lead. On-demand billing (no capacity to
+  # manage) and point-in-time recovery on, so leads survive accidental deletion.
+  # The by_received GSI lets you Query all leads newest-first without a scan.
+  TrialLeadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-leads"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: entity
+          AttributeType: S
+        - AttributeName: received_at
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: by_received
+          KeySchema:
+            - AttributeName: entity
+              KeyType: HASH
+            - AttributeName: received_at
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  TrialFormApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      # CORS is enforced at the gateway — only the landing origins may call this.
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowOrigin
+          - https://aria-sec.com
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - content-type
+      # Cap request volume at the edge so a flood can't run up Lambda cost.
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 5
+
+  TrialFormFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: ./
+      Environment:
+        Variables:
+          NOTIFY_EMAIL: !Ref NotifyEmail
+          FROM_EMAIL: !Ref FromEmail
+          ALLOW_ORIGIN: !Ref AllowOrigin
+          LEADS_TABLE: !Ref TrialLeadsTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref TrialLeadsTable
+        - Statement:
+            - Effect: Allow
+              Action: ses:SendEmail
+              Resource: '*'
+      Events:
+        Submit:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TrialFormApi
+            Path: /trial-request
+            Method: POST
+
+Outputs:
+  ApiEndpoint:
+    Description: Set this as VITE_TRIAL_ENDPOINT for the landing build.
+    Value: !Sub "https://${TrialFormApi}.execute-api.${AWS::Region}.amazonaws.com/trial-request"
+  LeadsTableName:
+    Description: DynamoDB table holding every submitted lead.
+    Value: !Ref TrialLeadsTable

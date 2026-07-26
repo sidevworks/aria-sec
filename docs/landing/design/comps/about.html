@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About ARIA — what it is, and why now</title>
+<meta name="description" content="ARIA is an autonomous AI security operations platform: voice-native, spatially navigated, governed by an explicit trust ladder, and auditable end to end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .about-lede { max-width: 46rem; }
+  .triple { display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-5); margin-top: var(--sp-6); }
+  @media (max-width:760px){ .triple { grid-template-columns: 1fr; } }
+  .founder { display:flex; gap: var(--sp-6); align-items:center; flex-wrap:wrap; }
+  .founder .portrait {
+    width: 7rem; height: 7rem; border-radius: 50%; flex:none;
+    border: var(--hairline-strong);
+    background: radial-gradient(circle at 35% 30%, rgba(99,245,255,0.35), rgba(22,135,255,0.12) 60%, transparent);
+    display:grid; place-items:center; color: var(--cyan);
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html" aria-current="page">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<aside class="hud-rail" aria-label="Controls">
+  <button class="btn-rail" aria-label="Open command console"><svg class="ico"><use href="../icons.svg#i-console"/></svg></button>
+  <button class="btn-rail" aria-label="Enable voice mode"><svg class="ico"><use href="../icons.svg#i-mic"/></svg></button>
+  <button class="btn-rail" aria-label="Audio on or off"><svg class="ico"><use href="../icons.svg#i-audio-off"/></svg></button>
+  <button class="btn-rail" aria-label="Start guided tour"><svg class="ico"><use href="../icons.svg#i-tour"/></svg></button>
+</aside>
+
+<main class="page container" id="main" data-warp="bank">
+  <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>About sector open</span>
+
+  <section class="section" style="margin-top:var(--sp-6)">
+    <div class="about-lede stack-4">
+      <span class="t-micro t-micro--accent">About ARIA</span>
+      <h1 class="t-display">I turn security telemetry into understandable, accountable action that improves over time.</h1>
+      <p class="t-body" style="font-size:var(--fs-h3)">ARIA — Autonomous Resilience Intelligence Architecture — is a security operations cockpit that watches your environment, explains risk in plain language, coordinates response, and acts under governed, auditable autonomy.</p>
+      <button class="fom" data-audio="/audio/about.mp3" data-captions="/captions/about.vtt">
+        <span class="fom-ring"><svg class="ico"><use href="../icons.svg#i-play"/></svg></span>Find out more — ARIA narrates (2:54)
+      </button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="problem" style="border-left:2px solid var(--magenta); padding-left:var(--sp-5); max-width:42rem">
+      <span class="t-micro">Why ARIA exists</span>
+      <h2 class="t-h1" style="margin-top:var(--sp-3)">The problem isn't a shortage of data.</h2>
+      <p>Every SOC is drowning in telemetry. The problem is that tools show you data but don't decide, don't explain, and don't act — and the ones that do act, you can't trust and you can't audit. ARIA watches. ARIA explains exactly what it found and why it matters. And ARIA acts — only as far as you allow, with every decision recorded and reviewable.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="t-micro">Deployment</span>
+      <h2 class="t-h1" style="margin-top:var(--sp-3)">Three intelligence engines</h2>
+      <p>One platform, three ways to run it — matched to your reasoning, sovereignty, and resilience requirements.</p>
+    </div>
+    <div class="triple">
+      <div class="card engine-card" data-accent style="--accent:var(--cyan)">
+        <svg class="ico" style="color:var(--cyan)"><use href="../icons.svg#i-engine"/></svg>
+        <h3 class="t-h3">Cloud engine</h3>
+        <p class="t-small">Anthropic's latest models — Claude Opus 4.8 — for the hardest correlation and triage. Maximum reasoning power.</p>
+        <span class="t-micro">Reasoning-first</span>
+      </div>
+      <div class="card engine-card" data-accent style="--accent:var(--teal)">
+        <svg class="ico" style="color:var(--teal)"><use href="../icons.svg#i-lock"/></svg>
+        <h3 class="t-h3">Local engine</h3>
+        <p class="t-small">Fully on-premises and configurable. Nothing leaves your network — built for strict data-sovereignty and regulatory needs.</p>
+        <span class="t-micro">Data-sovereign</span>
+      </div>
+      <div class="card engine-card" data-accent style="--accent:var(--violet)">
+        <svg class="ico" style="color:var(--violet)"><use href="../icons.svg#i-pulse"/></svg>
+        <h3 class="t-h3">Hybrid engine</h3>
+        <p class="t-small">Runs on both simultaneously — protection never drops, even if the external network is compromised.</p>
+        <span class="t-micro">Always-on</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid grid--3">
+      <div class="panel"><span class="t-micro t-micro--accent">Voice-native</span><p class="t-small" style="margin-bottom:0">Speech-to-text runs in-process on your hardware — audio never leaves the operator's network.</p></div>
+      <div class="panel"><span class="t-micro t-micro--accent">Self-observing</span><p class="t-small" style="margin-bottom:0">ARIA monitors itself, keeps an audit-grade memory, and exposes its own diagnostics.</p></div>
+      <div class="panel"><span class="t-micro t-micro--accent">Self-learning</span><p class="t-small" style="margin-bottom:0">Every decision and human intervention feeds a study ledger — reviewable and editable by your operators.</p></div>
+    </div>
+  </section>
+
+  <!-- Founder slot — structured space, founder fills copy -->
+  <section class="section">
+    <div class="panel founder">
+      <div class="portrait"><svg class="ico" style="width:2rem;height:2rem"><use href="../icons.svg#i-identity"/></svg></div>
+      <div style="flex:1; min-width:16rem">
+        <span class="t-micro">Founder</span>
+        <h3 class="t-h2" style="margin-top:var(--sp-2)">Sary Ismail</h3>
+        <p class="t-small" style="margin-bottom:0">[Founder bio — credibility line, prior work, why this problem. Founder to supply; structured slot per brief §6.2.]</p>
+      </div>
+      <a class="btn btn--quiet" href="contact.html">Talk to the founder</a>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center">
+    <h2 class="t-display">Let it run on your environment.</h2>
+    <div class="hero cta-row" style="justify-content:center">
+      <a class="btn btn--primary" href="trial.html">Request a 14-day trial</a>
+      <a class="btn btn--ghost" href="functions.html">Explore the platform</a>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="what are the three engines · open the trust ladder" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

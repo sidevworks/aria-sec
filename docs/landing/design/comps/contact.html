@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARIA — Contact</title>
+<meta name="description" content="Talk to the founder. Email, phone, or a direct message — Kingdom of Bahrain.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../aria-ui.css">
+<link rel="stylesheet" href="comp-shared.css">
+<style>
+  .contact-wrap { display:grid; grid-template-columns: 1fr 1.1fr; gap: var(--sp-7); align-items:start; }
+  @media (max-width:760px){ .contact-wrap { grid-template-columns:1fr; } }
+  .channel { display:flex; align-items:center; gap: var(--sp-4); }
+  .channel .ico { color: var(--cyan); flex:none; width:1.4rem; height:1.4rem; }
+  .channel a, .channel span.val { color: var(--text-bright); font-family: var(--font-mono); font-size: var(--fs-small); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-cosmos" aria-hidden="true"></div>
+
+<header class="hud-top">
+  <span class="hud-brand"><span class="mark"></span>ARIA</span>
+  <nav class="hud-nav" aria-label="Sectors">
+    <a href="home.html">Cockpit</a>
+    <a href="about.html">About</a>
+    <a href="functions.html">Platform</a>
+    <a href="demo.html">Demo</a>
+    <a href="investors.html">Investors</a>
+    <a href="contact.html" aria-current="page">Contact</a>
+  </nav>
+  <a class="btn btn--primary" style="min-height:2.25rem" href="trial.html">Request trial</a>
+</header>
+
+<main class="page container" id="main" data-warp="sweep">
+  <span class="arrival"><svg class="ico"><use href="../icons.svg#i-warp"/></svg>Comms channel open</span>
+
+  <div class="contact-wrap section" style="margin-top:var(--sp-6)">
+    <div class="stack-4">
+      <span class="t-micro t-micro--accent">Contact</span>
+      <h1 class="t-display">Talk to the founder.</h1>
+      <p>Direct line — no routing queue, no sales layer.</p>
+      <div class="panel stack-4">
+        <p class="channel" style="margin:0"><svg class="ico"><use href="../icons.svg#i-mail"/></svg><a href="mailto:sary@aria-sec.com">sary@aria-sec.com</a></p>
+        <p class="channel" style="margin:0"><svg class="ico"><use href="../icons.svg#i-phone"/></svg><a href="tel:+97336146601">+973 3614 6601</a></p>
+        <p class="channel" style="margin:0"><svg class="ico"><use href="../icons.svg#i-pin"/></svg><span class="val">Kingdom of Bahrain</span></p>
+      </div>
+    </div>
+
+    <form class="panel stack-4">
+      <div class="field"><label for="c-name">Full name <span class="req" aria-hidden="true">*</span></label><input class="input" id="c-name" autocomplete="name" required></div>
+      <div class="field"><label for="c-mail">Email <span class="req" aria-hidden="true">*</span></label><input class="input" id="c-mail" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="c-msg">Message <span class="req" aria-hidden="true">*</span></label><textarea class="textarea" id="c-msg" required placeholder="What's on your mind?"></textarea></div>
+      <!-- honeypot -->
+      <div class="field" style="position:absolute; left:-9999px" aria-hidden="true"><label for="c-web">Website</label><input class="input" id="c-web" tabindex="-1" autocomplete="off"></div>
+      <button class="btn btn--primary btn--block" type="submit"><svg class="ico"><use href="../icons.svg#i-send"/></svg>Send message</button>
+      <div class="notice notice--ok" hidden><svg class="ico"><use href="../icons.svg#i-check"/></svg><div><b>Message sent.</b><p>You'll hear back from the founder directly.</p></div></div>
+      <div class="notice notice--err" hidden><svg class="ico"><use href="../icons.svg#i-critical"/></svg><div><b>That didn't go through.</b><p>Email sary@aria-sec.com directly.</p></div></div>
+    </form>
+  </div>
+
+  <footer class="site-foot">
+    <div class="cols">
+      <span class="t-small t-dim">ARIA — Autonomous Resilience Intelligence Architecture</span>
+      <span class="t-small t-dim">sary@aria-sec.com · +973 3614 6601 · Kingdom of Bahrain</span>
+    </div>
+  </footer>
+</main>
+
+<div class="console" role="search">
+  <span class="prompt">›</span>
+  <input placeholder="request a trial · open investors" aria-label="Command console">
+  <span class="hint">⏎ to route</span>
+</div>
+</body>
+</html>

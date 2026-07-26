@@ -1,0 +1,141 @@
+/* ════════════════════════════════════════════════════════════════════════
+   COSMOS-UI · Shared Asset Language (Year 2050)
+   Unified token layer for all 14 panels. Import once (e.g. in main.jsx):
+       import "./panels/cosmos-tokens.css";
+   Panels render their own canvas/WebGL; these tokens drive the surrounding
+   HUD chrome so every panel feels like one starship, built by 14 civilizations.
+   ════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* — Void & structure — */
+  --cx-void:        #030307;
+  --cx-void-2:      #06061104;
+  --cx-indigo:      #1b1145;
+  --cx-ultraviolet: #7c3aed;
+
+  /* — Luminescence (matches existing App.jsx accents) — */
+  --cx-cyan:        #63f5ff;   /* medium / calm   */
+  --cx-blue:        #1687ff;   /* network         */
+  --cx-violet:      #8b5cf6;   /* low / ambient   */
+  --cx-amber:       #ffc857;   /* high / elevated */
+  --cx-flare:       #ff3d81;   /* critical / breach */
+  --cx-event-gold:  #fbbf24;   /* event-horizon   */
+  --cx-teal:        #2dd4bf;   /* ai-spm          */
+
+  /* — Posture semantics (clean → breach) — */
+  --cx-clean:    var(--cx-cyan);
+  --cx-elevated: var(--cx-amber);
+  --cx-breach:   var(--cx-flare);
+
+  /* — Motion language (Agent 11 · Kinetic Motion Scripter) — */
+  --cx-ease-cosmic: cubic-bezier(0.16, 1, 0.3, 1);   /* inertial settle */
+  --cx-ease-warp:   cubic-bezier(0.7, 0, 0.84, 0);   /* slingshot accel */
+  --cx-dur-micro:   180ms;
+  --cx-dur-pulse:   1400ms;
+
+  /* — Glass chrome — */
+  --cx-panel-bg:    rgba(8, 10, 24, 0.55);
+  --cx-panel-line:  rgba(99, 245, 255, 0.14);
+  --cx-text:        #eaf7ff;
+  --cx-text-dim:    rgba(234, 247, 255, 0.5);
+
+  /* ── Identity & Access Sector — risk colour scale ──────────────────────────
+     Bands: 0–25 nominal · 26–50 elevated · 51–75 warning · 76–100 critical  */
+  --id-risk-nominal:   #38bdf8;
+  --id-risk-elevated:  #ffc857;
+  --id-risk-warning:   #ef4444;
+  --id-risk-critical:  #ffffff;
+
+  --id-glow-nominal:   0 0 18px 4px rgba(56,189,248,0.45);
+  --id-glow-elevated:  0 0 22px 6px rgba(255,200,87,0.55);
+  --id-glow-warning:   0 0 28px 8px rgba(239,68,68,0.65);
+  --id-glow-critical:  0 0 36px 10px rgba(255,255,255,0.75), 0 0 70px 20px rgba(255,255,255,0.25);
+
+  --id-grad-nominal:   radial-gradient(circle at 50% 50%, rgba(56,189,248,0.22) 0%, rgba(6,8,20,0) 70%);
+  --id-grad-elevated:  radial-gradient(circle at 50% 50%, rgba(255,200,87,0.28) 0%, rgba(6,8,20,0) 70%);
+  --id-grad-warning:   radial-gradient(circle at 50% 50%, rgba(239,68,68,0.32) 0%, rgba(6,8,20,0) 70%);
+  --id-grad-critical:  radial-gradient(circle at 50% 50%, rgba(255,255,255,0.38) 0%, rgba(6,8,20,0) 70%);
+}
+
+/* HUD status-dot pulse (Agent 10 · used by HudOverlay) */
+@keyframes cx-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Identity sector — critical galaxy ring pulse */
+@keyframes id-critical-pulse {
+  0%, 100% { box-shadow: var(--id-glow-critical); opacity: 1; }
+  50%      { box-shadow: 0 0 18px 4px rgba(255,255,255,0.3); opacity: 0.8; }
+}
+
+/* Identity sector — galaxy ambient breathe */
+@keyframes id-galaxy-breathe {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.04); opacity: 0.88; }
+}
+
+/* Identity sector — warning galaxy flicker */
+@keyframes id-warning-flicker {
+  0%, 90%, 100% { opacity: 1; }
+  95%           { opacity: 0.72; }
+}
+
+/* Identity sector — behaviour ring deviation distort */
+@keyframes id-ring-distort {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 40; }
+}
+
+/* Identity sector — policy gate particle stream */
+@keyframes id-particle-flow {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* Telemetry-reconnecting chip pulse (amber, faster/uneasy vs. the calm cx-pulse) */
+@keyframes cx-recon-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.25; transform: scale(0.55); }
+}
+
+/* Generative ambient noise (Agent 14 · Chaos & Entropy) — subtle solar-wind grain */
+@keyframes cx-solar-drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 320px -180px, -200px 260px; }
+}
+
+.cx-panel {
+  position: relative;
+  background: var(--cx-panel-bg);
+  border: 1px solid var(--cx-panel-line);
+  border-radius: 14px;
+  overflow: hidden;
+  color: var(--cx-text);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+
+/* Micro-HUD corner ticks (Agent 12 · Micro-HUD Asset Generator) */
+.cx-panel::before,
+.cx-panel::after {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 1px solid var(--cx-cyan);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.cx-panel::before { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+.cx-panel::after  { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+
+/* HUD telemetry type (Agent 10 · Quantum Vector Typographer) */
+.cx-readout {
+  font: 600 11px/1.1 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cx-text-dim);
+}
+.cx-readout[data-state="breach"]   { color: var(--cx-breach);   text-shadow: 0 0 10px var(--cx-breach); }
+.cx-readout[data-state="elevated"] { color: var(--cx-elevated); text-shadow: 0 0 8px var(--cx-elevated); }
+.cx-readout[data-state="clean"]    { color: var(--cx-clean); }

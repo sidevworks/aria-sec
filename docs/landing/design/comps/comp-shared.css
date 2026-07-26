@@ -1,0 +1,105 @@
+/* Shared layout patterns for the page comps. Requires tokens.css + aria-ui.css. */
+
+.page {
+  position: relative;
+  z-index: var(--z-content);
+  padding-top: calc(var(--hud-topbar-h) + var(--sp-7));
+  padding-bottom: var(--sp-9);
+}
+
+/* ---------- Galaxy stage (CSS poster — the build replaces this layer with WebGL;
+   this exact composition IS the low-power/mobile poster fallback design) ---------- */
+.galaxy-stage {
+  position: relative;
+  height: clamp(26rem, 58vh, 36rem);
+  margin-top: var(--sp-6);
+}
+.galaxy-stage .links { position: absolute; inset: 0; width: 100%; height: 100%; }
+.galaxy-stage .links path {
+  fill: none; stroke: rgba(99, 245, 255, 0.14); stroke-width: 1;
+  stroke-dasharray: 3 6;
+}
+.galaxy-stage .node { position: absolute; transform: translate(-50%, -50%); }
+.galaxy-stage .node:hover, .galaxy-stage .node:focus-visible { transform: translate(-50%, -50%) scale(1.08); }
+.galaxy-stage .node--active { transform: translate(-50%, -50%) scale(1.12); }
+/* core glow at center */
+.galaxy-stage::before {
+  content: "";
+  position: absolute; left: 50%; top: 50%;
+  width: 22rem; height: 22rem; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(99,245,255,0.10), rgba(22,135,255,0.05) 45%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* node positions (5 sector hubs, slight orbital asymmetry) */
+.pos-threat   { left: 22%; top: 30%; }
+.pos-network  { left: 76%; top: 26%; }
+.pos-command  { left: 50%; top: 52%; --node-size: 9rem; }
+.pos-response { left: 26%; top: 76%; }
+.pos-identity { left: 74%; top: 74%; }
+
+/* ---------- Hero ---------- */
+.hero { text-align: center; }
+.hero .sub {
+  max-width: 44rem; margin: var(--sp-5) auto 0;
+  font-size: var(--fs-h3); line-height: 1.6;
+}
+.hero .cta-row {
+  display: flex; gap: var(--sp-4); justify-content: center;
+  margin-top: var(--sp-6); flex-wrap: wrap;
+}
+
+/* ---------- Section rhythm ---------- */
+.section { margin-top: var(--sp-9); }
+.section-head { max-width: 40rem; }
+
+/* ---------- Footer ---------- */
+.site-foot {
+  margin-top: var(--sp-9);
+  border-top: var(--hairline-dim);
+  padding: var(--sp-6) 0 calc(var(--sp-8) + var(--console-h));
+}
+.site-foot .cols { display: flex; justify-content: space-between; gap: var(--sp-6); flex-wrap: wrap; }
+
+/* ---------- Engine cards (About) ---------- */
+.engine-card { text-align: left; }
+.engine-card .ico { width: 1.6rem; height: 1.6rem; margin-bottom: var(--sp-3); }
+
+/* ---------- Trust ladder (Functions) ---------- */
+.ladder { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); align-items: end; }
+.ladder .rung {
+  border: var(--hairline-dim);
+  border-radius: var(--r-panel);
+  padding: var(--sp-4);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  transition: border-color var(--t-ui), box-shadow var(--t-ui);
+}
+.ladder .rung[aria-current="step"] { border-color: rgba(99,245,255,0.5); box-shadow: var(--glow-sm); }
+.ladder .rung .bar { height: 0.4rem; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--blue)); margin-bottom: var(--sp-3); }
+.ladder .rung:nth-child(1) .bar { width: 25%; }
+.ladder .rung:nth-child(2) .bar { width: 50%; }
+.ladder .rung:nth-child(3) .bar { width: 75%; }
+.ladder .rung:nth-child(4) .bar { width: 100%; }
+
+/* ---------- Stat strip (Investors) ---------- */
+.stat-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-5); }
+.stat-strip .stat { text-align: center; padding: var(--sp-5); }
+.stat-strip .stat b {
+  display: block; font-size: var(--fs-h1); color: var(--text-bright);
+  font-weight: var(--fw-semibold); letter-spacing: var(--ls-display);
+}
+
+/* ---------- Mobile ---------- */
+.sector-list { display: none; }
+@media (max-width: 760px) {
+  .page { padding-top: calc(var(--hud-topbar-h) + var(--sp-5)); padding-bottom: 9rem; }
+  .galaxy-stage { display: none; }            /* spatial galaxy → stacked tappable list */
+  .sector-list { display: flex; }
+  .hero .cta-row .btn { width: 100%; }
+  .ladder { grid-template-columns: 1fr; align-items: stretch; }
+  .stat-strip { grid-template-columns: 1fr; }
+  .site-foot { padding-bottom: 10rem; }
+}
