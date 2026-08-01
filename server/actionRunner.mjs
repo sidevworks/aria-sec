@@ -85,15 +85,31 @@ registerAction("geo-lookup", {
 registerAction("run-scan", {
   tier: "low",
   reversible: true,
-  execute: async (_params, _pre) => ({ ok: true, detail: "Deep scan queued" }),
-  verify:  async (_p, _pre)      => ({ verified: true, observedState: "scan-queued", expectedState: "scan-queued" }),
+  execute: async (params, _pre) => {
+    const { runScan } = await import("./ariaData.mjs");
+    const scan = runScan(params);
+    return { ok: scan.status === "complete", detail: "Live source-backed scan completed", scan };
+  },
+  verify: async (_params, _pre, post) => ({
+    verified: post?.scan?.status === "complete" && Array.isArray(post.scan.findings),
+    observedState: post?.scan?.status === "complete" ? "source-scan-complete" : "scan-missing",
+    expectedState: "source-scan-complete",
+  }),
 });
 
 registerAction("deep-scan", {
   tier: "low",
   reversible: true,
-  execute: async (_params, _pre) => ({ ok: true, detail: "Deep scan queued" }),
-  verify:  async (_p, _pre)      => ({ verified: true, observedState: "scan-queued", expectedState: "scan-queued" }),
+  execute: async (params, _pre) => {
+    const { runScan } = await import("./ariaData.mjs");
+    const scan = runScan({ ...params, depth: params.depth || "deep" });
+    return { ok: scan.status === "complete", detail: "Deep source-backed scan completed", scan };
+  },
+  verify: async (_params, _pre, post) => ({
+    verified: post?.scan?.status === "complete" && Array.isArray(post.scan.findings),
+    observedState: post?.scan?.status === "complete" ? "source-scan-complete" : "scan-missing",
+    expectedState: "source-scan-complete",
+  }),
 });
 
 registerAction("block-ip", {
@@ -162,16 +178,21 @@ registerAction("revoke-session", {
   tier: "medium",
   reversible: false,
   execute: async (params, _pre) => {
-    if (!params.userId) return { ok: false, detail: "userId parameter required" };
+    const sid = params.sid || params.sessionId || params.userId;
+    if (!sid) return { ok: false, detail: "sid parameter required" };
     try {
       const { revokeSessionById } = await import("./ariaSession.mjs");
-      await revokeSessionById(params.userId);
-      return { ok: true, detail: `Session revoked for ${params.userId}` };
+      const result = await revokeSessionById({ sid, tenant_id: params.tenantId || null });
+      return { ok: Boolean(result?.ok), detail: result?.ok ? `Session ${sid} revoked` : (result?.error || "Session revoke failed"), revoke: result };
     } catch (err) {
       return { ok: false, detail: err.message };
     }
   },
-  verify: async (_p, _pre) => ({ verified: true, observedState: "session-revoked", expectedState: "session-revoked" }),
+  verify: async (_params, _pre, post) => ({
+    verified: Boolean(post?.revoke?.ok && (post.revoke.revoked_at || post.revoke.already_revoked)),
+    observedState: post?.revoke?.ok ? "session-revoked" : "session-active-or-unknown",
+    expectedState: "session-revoked",
+  }),
 });
 
 registerAction("isolate-process", {
@@ -193,7 +214,7 @@ registerAction("isolate-process", {
       return { ok: false, detail: err.message };
     }
   },
-  verify: async (_p, _pre) => ({ verified: true, observedState: "isolation-incident-created", expectedState: "isolation-incident-created" }),
+  verify: async (_p, _pre, post) => ({ verified: Boolean(post?.ok), observedState: "incident-created-only", expectedState: "incident-created-only" }),
 });
 
 registerAction("isolate-host", {
@@ -201,9 +222,9 @@ registerAction("isolate-host", {
   reversible: true,
   execute: async (params, _pre) => {
     if (!params.host) return { ok: false, detail: "host parameter required" };
-    return { ok: true, detail: `Host isolation queued for ${params.host} — requires network-layer enforcement` };
+    return { ok: true, result_state: "staged", enforcement_mode: "not-enforced", detail: `Host isolation queued for ${params.host}; network-layer enforcement is not configured` };
   },
-  verify: async (_p, _pre) => ({ verified: true, observedState: "isolation-queued", expectedState: "isolation-queued" }),
+  verify: async (_p, _pre, post) => ({ verified: Boolean(post?.ok), observedState: "isolation-plan-staged", expectedState: "isolation-plan-staged" }),
 });
 
 registerAction("stage-host-isolation", {
@@ -218,6 +239,8 @@ registerAction("stage-host-isolation", {
       });
       return {
         ok: true,
+        result_state: "staged",
+        enforcement_mode: "not-enforced",
         detail: `Local host isolation plan staged for ${plan.hostLabel}`,
         plan,
       };
@@ -225,9 +248,9 @@ registerAction("stage-host-isolation", {
       return { ok: false, detail: err.message };
     }
   },
-  verify: async (params, _pre) => ({
-    verified: Boolean(params.hostLabel || params.host),
-    observedState: params.hostLabel || params.host ? "plan-staged" : "plan-missing",
+  verify: async (_params, _pre, post) => ({
+    verified: Boolean(post?.plan),
+    observedState: post?.plan ? "plan-staged" : "plan-missing",
     expectedState: "plan-staged",
   }),
 });
@@ -252,9 +275,9 @@ registerAction("scan-local-artifacts", {
       return { ok: false, detail: err.message };
     }
   },
-  verify: async (_params, pre) => ({
-    verified: Boolean(pre?.scanRequested),
-    observedState: pre?.scanRequested ? "scan-complete" : "scan-missing",
+  verify: async (_params, _pre, post) => ({
+    verified: Boolean(post?.scan && Array.isArray(post.scan.findings)),
+    observedState: post?.scan ? "scan-complete" : "scan-missing",
     expectedState: "scan-complete",
   }),
 });
@@ -268,21 +291,33 @@ registerAction("quarantine-bulk", {
     }
     try {
       const { quarantineFile } = await import("./quarantineStore.mjs");
-      for (const item of params.items) {
-        await quarantineFile(item.path || item, { reason: "ARIA bulk quarantine", actor: params.actor || "aria:action-runner" });
+      const records = [];
+      for (const rawItem of params.items) {
+        const item = typeof rawItem === "object" && rawItem ? rawItem : { path: String(rawItem) };
+        records.push(await quarantineFile(params.tenantId || "tenant-local", {
+          filename: item.name || item.filename || item.path?.split(/[\\/]/).pop() || null,
+          filepath: item.path || item.filepath || null,
+          sha256: item.sha256 || null,
+          scan_result: item.scan_result || "suspicious",
+          quarantined_by: params.actor || "aria:action-runner",
+        }));
       }
-      return { ok: true, detail: `${params.items.length} item(s) quarantined` };
+      return { ok: true, result_state: "staged", enforcement_mode: "inventory-only", detail: `${records.length} quarantine record(s) created; file movement is not configured`, records };
     } catch (err) {
       return { ok: false, detail: err.message };
     }
   },
-  verify: async (params, _pre) => ({ verified: true, observedState: `${(params.items || []).length}-quarantined`, expectedState: `${(params.items || []).length}-quarantined` }),
+  verify: async (params, _pre, post) => ({
+    verified: Array.isArray(post?.records) && post.records.length === (params.items || []).length,
+    observedState: `${post?.records?.length || 0}-inventory-records`,
+    expectedState: `${(params.items || []).length}-inventory-records`,
+  }),
 });
 
 registerAction("policy-change", {
   tier: "critical",
   reversible: true,
-  execute: async (_params, _pre) => ({ ok: true, detail: "Policy change staged for manual review" }),
+  execute: async (_params, _pre) => ({ ok: true, result_state: "staged", enforcement_mode: "not-enforced", detail: "Policy change staged for manual review" }),
   verify:  async (_p, _pre)      => ({ verified: true, observedState: "policy-staged", expectedState: "policy-staged" }),
 });
 
@@ -320,7 +355,7 @@ registerAction("ai-spm-apply-remediation", {
       if (!ex(dir)) mk(dir, { recursive: true });
       const target = j(dir, artifact.filename.replace(/[^a-zA-Z0-9._/-]/g, "_").replace(/\//g, "__"));
       wf(target, artifact.body, "utf8");
-      return { ok: true, detail: `Artifact staged at ${target}`, stagedPath: target };
+      return { ok: true, result_state: "staged", enforcement_mode: "artifact-only", detail: `Artifact staged at ${target}`, stagedPath: target };
     } catch (err) {
       return { ok: false, detail: `Staging failed: ${err.message}` };
     }
@@ -493,25 +528,27 @@ export async function runAction(opts = {}) {
   // ── 3. Verify ─────────────────────────────────────────────────────────────────
   await new Promise(r => setTimeout(r, VERIFY_DELAY_MS));
   try {
-    entry.verification = await def.verify({ ...params, tenantId }, entry.preState);
+    entry.verification = await def.verify({ ...params, tenantId }, entry.preState, execResult);
   } catch {
     entry.verification = { verified: false, observedState: "unknown", expectedState: "unknown" };
   }
 
-  entry.outcome = entry.verification.verified ? "success" : "failed";
+  const staged = execResult.result_state === "staged" || execResult.enforcement_mode === "not-enforced" || execResult.enforcement_mode === "inventory-only" || execResult.enforcement_mode === "artifact-only";
+  entry.enforcementMode = execResult.enforcement_mode || "enforced-or-observed";
+  entry.outcome = entry.verification.verified ? (staged ? "staged" : "success") : "failed";
 
   // ── 4. Persist + audit ────────────────────────────────────────────────────────
   _persistEntry(entry);
   _writeAudit(entry);
 
-  const eventType = entry.verification.verified ? "aria.action.verified" : "aria.action.verification_failed";
+  const eventType = entry.outcome === "staged" ? "aria.action.staged" : entry.verification.verified ? "aria.action.verified" : "aria.action.verification_failed";
   emit(eventType, { execId, actionId, hypothesisId, verification: entry.verification });
 
   // Update hypothesis status
   if (hypothesisId) {
     try {
       const { updateHypothesis } = await import("./reasoningEngine.mjs");
-      const newStatus = entry.verification.verified ? "verified" : "failed";
+      const newStatus = entry.outcome === "staged" ? "staged" : entry.verification.verified ? "verified" : "failed";
       updateHypothesis(hypothesisId, {
         status: newStatus,
         executedAt: entry.executedAt,

@@ -12,6 +12,7 @@ process.env.ARIA_AI_SPM_DISABLE_GH_AUTO = "1";
 
 function createReq({ method = "GET", url = "/", body, headers = {} } = {}) {
   const req = new EventEmitter();
+  req.socket = { remoteAddress: "127.0.0.1" };
   req.method = method;
   req.url = url;
   req.headers = headers;
@@ -78,7 +79,9 @@ test("tenant/authz default contract denies missing middleware headers", async ()
 
 test("tenant/authz explicit local bypass allows missing headers when enabled", async () => {
   const prev = process.env.ARIA_AUTHZ_ALLOW_LOCAL_BYPASS;
+  const prevRole = process.env.ARIA_DEFAULT_ROLE;
   process.env.ARIA_AUTHZ_ALLOW_LOCAL_BYPASS = "true";
+  process.env.ARIA_DEFAULT_ROLE = "admin";
   try {
     const res = await request({ method: "POST", url: "/api/ai-spm/scan", body: {} });
     assert.equal(res.statusCode, 200);
@@ -86,6 +89,8 @@ test("tenant/authz explicit local bypass allows missing headers when enabled", a
   } finally {
     if (prev === undefined) delete process.env.ARIA_AUTHZ_ALLOW_LOCAL_BYPASS;
     else process.env.ARIA_AUTHZ_ALLOW_LOCAL_BYPASS = prev;
+    if (prevRole === undefined) delete process.env.ARIA_DEFAULT_ROLE;
+    else process.env.ARIA_DEFAULT_ROLE = prevRole;
   }
 });
 
@@ -93,7 +98,7 @@ test("audit persistence updates for scan, finding-action, and approval flows", a
   const memoryDir = join(process.cwd(), "aria-memory");
   const scansPath = join(memoryDir, "ai-spm-scan-history.json");
   const decisionsPath = join(memoryDir, "ai-spm-decisions.json");
-  const approvalsPath = join(memoryDir, "approval-queue.json");
+  const approvalsPath = join(memoryDir, "tenants", "acme", "approval-queue.json");
 
   const beforeScans = readJsonFile(scansPath, { scans: [] });
   const beforeDecisions = readJsonFile(decisionsPath, {});
@@ -287,7 +292,7 @@ test("aria session route denies unauthenticated and unauthorized role escalation
     url: "/api/aria/session",
     body: { tenant_id: "acme", user_id: "u-session", role: "admin" },
   });
-  assert.equal(unauth.statusCode, 401);
+  assert.equal(unauth.statusCode, 403);
 
   const escalated = await request({
     method: "POST",
@@ -312,9 +317,9 @@ test("aria session route allows trusted elevated role when authorized", async ()
   });
 
   assert.equal(res.statusCode, 200);
-  assert.equal(res.json().session?.tenant_id, "acme");
-  assert.equal(res.json().session?.user_id, "u-admin");
-  assert.equal(res.json().session?.role, "admin");
+  assert.equal(res.json().tenant_id, "acme");
+  assert.equal(res.json().user_id, "u-admin");
+  assert.equal(res.json().role, "admin");
 });
 
 test("invalid tenant/user context is rejected server-side", async () => {

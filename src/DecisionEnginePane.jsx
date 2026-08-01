@@ -115,10 +115,27 @@ function AttackPathViz({ path }) {
   );
 }
 
-function DecisionCard({ decision }) {
+function DecisionCard({ decision, onOverride }) {
+  const [overrideOpen, setOverrideOpen] = useState(false);
+  const [overrideReason, setOverrideReason] = useState("");
+  const [overrideBusy, setOverrideBusy] = useState(false);
+  const [overrideError, setOverrideError] = useState(null);
   if (!decision) return null;
   const action = decision.recommended_action;
   const fallback = decision.fallback_action;
+  const submitOverride = async () => {
+    if (overrideReason.trim().length < 5 || !onOverride) return;
+    setOverrideBusy(true);
+    setOverrideError(null);
+    const result = await onOverride(decision.decision_id, overrideReason.trim(), fallback || null);
+    setOverrideBusy(false);
+    if (result?.error) {
+      setOverrideError(result.error);
+      return;
+    }
+    setOverrideOpen(false);
+    setOverrideReason("");
+  };
   return (
     <div style={{ ...S.card, borderColor: `${ACCENT}44` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -159,6 +176,28 @@ function DecisionCard({ decision }) {
       {fallback && (
         <div style={{ fontSize: 10, color: "rgba(200,200,255,0.45)", marginTop: 4 }}>
           Fallback: <span style={{ color: "rgba(200,200,255,0.65)" }}>{fallback.verb?.replace(/_/g, " ")} — {fallback.rationale}</span>
+        </div>
+      )}
+      {decision.resolution?.status === "overridden" ? (
+        <div style={{ marginTop: 10, padding: "9px 12px", borderRadius: 8, border: `1px solid ${GOLD}55`, background: `${GOLD}0d`, color: GOLD, fontSize: 11 }}>
+          OPERATOR OVERRIDE RECORDED: {decision.resolution.reason}
+        </div>
+      ) : onOverride && (
+        <div style={{ marginTop: 10 }}>
+          {!overrideOpen ? (
+            <button type="button" onClick={() => setOverrideOpen(true)} style={{ padding: "7px 11px", borderRadius: 7, border: `1px solid ${GOLD}66`, background: `${GOLD}0d`, color: GOLD, fontSize: 10, cursor: "pointer", letterSpacing: "0.08em" }}>
+              OVERRIDE RECOMMENDATION
+            </button>
+          ) : (
+            <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" }}>
+              <input value={overrideReason} onChange={(event) => setOverrideReason(event.target.value)} placeholder="Why is ARIA's recommendation wrong?" style={{ flex: "1 1 280px", minWidth: 220, background: "rgba(0,0,0,0.35)", border: `1px solid ${GOLD}55`, borderRadius: 7, padding: "7px 9px", color: "rgba(235,245,255,0.9)", fontSize: 11 }} />
+              <button type="button" onClick={() => void submitOverride()} disabled={overrideBusy || overrideReason.trim().length < 5} style={{ padding: "7px 11px", borderRadius: 7, border: `1px solid ${GOLD}`, background: `${GOLD}18`, color: GOLD, fontSize: 10, cursor: "pointer" }}>
+                {overrideBusy ? "RECORDING..." : "CONFIRM OVERRIDE"}
+              </button>
+              <button type="button" onClick={() => setOverrideOpen(false)} style={{ padding: "7px 9px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 7, background: "transparent", color: "rgba(255,255,255,0.5)", fontSize: 10, cursor: "pointer" }}>CANCEL</button>
+              {overrideError && <div style={{ width: "100%", color: ACCENT, fontSize: 10 }}>{overrideError}</div>}
+            </div>
+          )}
         </div>
       )}
       <div style={{ marginTop: 8, fontSize: 10, color: "rgba(255,255,255,0.28)", ...S.mono }}>
@@ -554,6 +593,19 @@ export default function DecisionEnginePane({ accent = ACCENT, operationalLoop = 
     return { ok: true };
   };
 
+  const handleOverride = async (decisionId, reason, alternativeAction) => {
+    setBusyAction(`${decisionId}:override`);
+    const res = await ariaFetch("POST", `/api/aria/decisions/${encodeURIComponent(decisionId)}/override`, {
+      reason,
+      alternative_action: alternativeAction,
+    });
+    setBusyAction(null);
+    if (res.error || res.data?.error) return { error: res.data?.error || res.error };
+    if (res.data?.decision) setDecision(res.data.decision);
+    await loadStatic();
+    return { ok: true };
+  };
+
   useEffect(() => { void loadStatic(); }, []);
   useEffect(() => { if (operationalLoop) setLoop(operationalLoop); }, [operationalLoop]);
 
@@ -609,8 +661,8 @@ export default function DecisionEnginePane({ accent = ACCENT, operationalLoop = 
       </div>
 
       {/* ── Latest Decision ── */}
-      {decision && <DecisionCard decision={decision} />}
-      {!decision && ledger.length > 0 && <DecisionCard decision={ledger[0]} />}
+      {decision && <DecisionCard decision={decision} onOverride={handleOverride} />}
+      {!decision && ledger.length > 0 && <DecisionCard decision={ledger[0]} onOverride={handleOverride} />}
 
       {/* ── Attack Path ── */}
       {attackPaths.length > 0 && <AttackPathViz path={attackPaths[0]} />}

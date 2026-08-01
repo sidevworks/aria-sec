@@ -28,6 +28,7 @@ function createReq({ method = "GET", url = "/", body, headers = {} } = {}) {
   req.method = method;
   req.url    = url;
   req.headers = headers;
+  req.socket = { remoteAddress: "127.0.0.1" };
   req[Symbol.asyncIterator] = async function* () {
     if (body !== undefined) yield Buffer.from(JSON.stringify(body));
   };

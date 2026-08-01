@@ -39,6 +39,7 @@ import {
   logEvidence,
   makeDecision,
   makeEvidenceRecord,
+  updateDecisionResolution,
   updateEvidenceStatus,
 } from "./ariaOrchestrator.mjs";
 import { isDemoRequest, getDecisionFixture } from "./demoFixtures.mjs";
@@ -93,14 +94,15 @@ import { scanElasticSecurity, getElasticAlerts, getElasticRules } from "./connec
 import { handleIdentityRoute } from "./identityRoutes.mjs";
 import { handleNetworkIntelligenceRoute } from "./networkIntelligenceRoutes.mjs";
 import { handleBluetoothRoute } from "./bluetoothRoutes.mjs";
-import { handleVoicePipelineRoutes, warmVoicePipeline } from "./voicePipelineRoutes.mjs";
+import { handleVoicePipelineRoutes, warmVoicePipeline, recordVoiceMetric } from "./voicePipelineRoutes.mjs";
 import { handleAuthRoutes } from "./authRoutes.mjs";
 import { runAriaIntelligence } from "./ariaIntelligence.mjs";
 import { enforceQuotaGuard, getQuotaSnapshot } from "./quotaGuard.mjs";
 import { authorizeRequest, extractTenantContext, verifyJwtBearer } from "./authz.mjs";
 import { logAuditEvent, readAuditEvents } from "./auditLog.mjs";
+import { buildAuditEvidencePack } from "./auditExport.mjs";
 import { subscribe as sseSubscribe, emit as sseEmit, clientCount as sseClientCount } from "./eventBus.mjs";
-import { feed as arFeed, broadcast as arBroadcast } from "./autonomousResponse.mjs";
+import { feed as arFeed, broadcast as arBroadcast, getAutonomousReplayEvents } from "./autonomousResponse.mjs";
 import {
   extractSessionToken,
   issueSessionToken,
@@ -1197,10 +1199,11 @@ function inferAriaFunction(command) {
 }
 
 // ─── Claude (Anthropic) ───────────────────────────────────────────────────────
-async function callClaude(prompt, model = DEFAULT_CLOUD_MODEL) {
+async function callClaude(prompt, model = DEFAULT_CLOUD_MODEL, { signal } = {}) {
   if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
+    signal,
     headers: {
       "x-api-key": ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
@@ -1222,12 +1225,14 @@ async function callClaude(prompt, model = DEFAULT_CLOUD_MODEL) {
 
 // ─── Gemini text (platform intelligence, not realtime voice) ────────────────
 const GEMINI_FLASH_MODEL = process.env.GEMINI_FLASH_MODEL || "gemini-2.5-flash";
-async function callGeminiText(prompt, model = GEMINI_FLASH_MODEL) {
+const GEMINI_NARRATIVE_MODEL = process.env.GEMINI_NARRATIVE_MODEL || GEMINI_FLASH_MODEL;
+async function callGeminiText(prompt, model = GEMINI_FLASH_MODEL, { signal } = {}) {
   if (!GOOGLE_API_KEY) throw new Error("GOOGLE_API_KEY not configured");
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GOOGLE_API_KEY}`,
     {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
     }
@@ -1263,7 +1268,7 @@ function synthesizeOfflineAIResponse(prompt, { mode = "local", model, degradedRe
 
 // ─── Unified AI dispatcher ────────────────────────────────────────────────────
 // mode: "cloud" | "local" | "hybrid" | legacy "gemini"
-async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiModel } = {}) {
+async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiModel, signal } = {}) {
   const cm = cloudModel || DEFAULT_CLOUD_MODEL;
   const gm = geminiModel || GEMINI_FLASH_MODEL;
   const normalizedMode = ["gemini", "cloud", "local", "hybrid"].includes(mode) ? mode : "gemini";
@@ -1289,7 +1294,7 @@ async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiM
   if (normalizedMode === "hybrid") {
     if (ANTHROPIC_API_KEY) {
       try {
-        const text = await callClaude(prompt, cm);
+        const text = await callClaude(prompt, cm, { signal });
         return { text, source: "hybrid-cloud", model: cm };
       } catch (err) {
         console.warn(`[ai] hybrid: cloud leg failed, falling back to local — ${err?.message || err}`);
@@ -1297,7 +1302,7 @@ async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiM
     }
     if (GOOGLE_API_KEY) {
       try {
-        const text = await callGeminiText(prompt, gm);
+        const text = await callGeminiText(prompt, gm, { signal });
         return { text, source: "hybrid-cloud", model: gm };
       } catch (err) {
         console.warn(`[ai] hybrid: gemini leg failed, falling back to local — ${err?.message || err}`);
@@ -1315,7 +1320,7 @@ async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiM
   }
 
   if (normalizedMode === "gemini") {
-    const text = await callGeminiText(prompt, gm);
+    const text = await callGeminiText(prompt, gm, { signal });
     return { text, source: "gemini", model: gm };
   }
 
@@ -1330,7 +1335,7 @@ async function callAI(prompt, { mode = "gemini", cloudModel, localModel, geminiM
         model: cm,
       };
     }
-    const text = await callClaude(prompt, cm);
+    const text = await callClaude(prompt, cm, { signal });
     return { text, source: "cloud", model: cm };
   }
 
@@ -1460,6 +1465,7 @@ async function runAiSpmCommand(command) {
 // Generates a security brief for any panel via the selected AI model.
 // Falls back gracefully when the chosen model is unavailable.
 async function handlePanelNarrative(req, res) {
+  const requestStartedAt = Date.now();
   const body = await readJson(req);
   const {
     panelId = "overview",
@@ -1467,7 +1473,33 @@ async function handlePanelNarrative(req, res) {
     model_mode = "gemini",
     cloud_model,
     local_model,
+    latency_profile = "realtime",
   } = body;
+  let contextReadyAt = Date.now();
+  const realtimeMode = latency_profile === "realtime";
+  const effectiveMode = realtimeMode && model_mode !== "local" && GOOGLE_API_KEY ? "gemini" : model_mode;
+  const effectiveGeminiModel = realtimeMode ? GEMINI_NARRATIVE_MODEL : GEMINI_FLASH_MODEL;
+  const reasoningTimeoutMs = Math.max(1000, Number(process.env.ARIA_NARRATIVE_TIMEOUT_MS || 8000));
+
+  const sendNarrative = (narrative, reasoningStartedAt) => {
+    const completedAt = Date.now();
+    const latency = {
+      profile: realtimeMode ? "realtime" : "quality",
+      requested_mode: model_mode,
+      effective_mode: effectiveMode,
+      context_ms: contextReadyAt - requestStartedAt,
+      reasoning_ms: completedAt - reasoningStartedAt,
+      total_ms: completedAt - requestStartedAt,
+      timeout_ms: reasoningTimeoutMs,
+    };
+    logAuditEvent({
+      event_type: "voice.narrative_latency",
+      actor: req.authz?.user_id || "operator",
+      context: { tenant_id: req.authz?.tenant_id || "tenant-local", panel_id: panelId, ai_source: narrative.ai_source, ...latency },
+    });
+    recordVoiceMetric({ narrative_last_total_ms: latency.total_ms });
+    jsonResponse(req, res, 200, { narrative: { ...narrative, latency } });
+  };
 
   // Pull current ai-spm state to enrich every panel with system-wide posture
   let aiSpmCtx = "";
@@ -1516,17 +1548,29 @@ Then also provide, separately from the spoken summary:
 - 2-3 recommended actions as short imperative phrases
 
 Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius": "...", "recommended_actions": ["..."] }`;
+  contextReadyAt = Date.now();
 
   // Try callAI with the chosen mode, then fall back to static local synthesis.
   let rawText = null;
-  let aiSource = model_mode;
+  let aiSource = effectiveMode;
+  const reasoningStartedAt = Date.now();
+  const reasoningAbort = new AbortController();
+  const reasoningTimer = setTimeout(() => reasoningAbort.abort(new Error("Narrative reasoning timed out")), reasoningTimeoutMs);
 
   try {
-    const aiResult = await callAI(prompt, { mode: model_mode, cloudModel: cloud_model, localModel: local_model });
+    const aiResult = await callAI(prompt, {
+      mode: effectiveMode,
+      cloudModel: cloud_model,
+      localModel: local_model,
+      geminiModel: effectiveGeminiModel,
+      signal: reasoningAbort.signal,
+    });
     rawText = aiResult.text;
     aiSource = aiResult.source;
   } catch (aiErr) {
-    console.warn(`[Aria] panel narrative ${model_mode} call failed:`, aiErr.message);
+    console.warn(`[Aria] panel narrative ${effectiveMode} call failed:`, aiErr.message);
+  } finally {
+    clearTimeout(reasoningTimer);
   }
 
   if (rawText) {
@@ -1534,8 +1578,7 @@ Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius"
     const parsed = jsonMatch ? (() => { try { return JSON.parse(jsonMatch[0]); } catch { return null; } })() : null;
 
     if (parsed?.summary) {
-      jsonResponse(req, res, 200, {
-        narrative: {
+      sendNarrative({
           status: "ready",
           title: `${panelId.replace(/-/g, " ")} — Aria intelligence brief`,
           summary: parsed.summary,
@@ -1543,15 +1586,13 @@ Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius"
           blast_radius: parsed.blast_radius || "",
           recommended_actions: parsed.recommended_actions || [],
           ai_source: aiSource,
-        },
-      });
+        }, reasoningStartedAt);
       return;
     }
 
     // Model responded but not in JSON — use raw text as summary
     if (rawText.length > 20) {
-      jsonResponse(req, res, 200, {
-        narrative: {
+      sendNarrative({
           status: "ready",
           title: `${panelId.replace(/-/g, " ")} — Aria brief`,
           summary: rawText.slice(0, 600),
@@ -1559,8 +1600,7 @@ Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius"
           blast_radius: "",
           recommended_actions: ["Review live panel data", "Run a quick scan"],
           ai_source: aiSource,
-        },
-      });
+        }, reasoningStartedAt);
       return;
     }
   }
@@ -1571,8 +1611,7 @@ Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius"
   const critInc = (incidents || []).filter(i => String(i.severity).toLowerCase() === "critical").length;
   const summary = `Here's where things stand on ${panelId.replace(/-/g, " ")}: risk score ${riskScore}, ${(connections||[]).length} network connections (${blocked} blocked), ${critInc} critical incidents, ${(logs||[]).length} log events, ${(vectors||[]).length} threat vectors active. ${systemCtx} Ask me anything about this — by voice or just type below.`;
 
-  jsonResponse(req, res, 200, {
-    narrative: {
+  sendNarrative({
       status: "ready",
       title: `${panelId.replace(/-/g, " ")} — Aria brief`,
       summary,
@@ -1580,8 +1619,7 @@ Respond in JSON: { "summary": "...", "likely_attack_path": "...", "blast_radius"
       blast_radius: critInc > 0 ? "Critical incidents may affect connected systems." : "No critical blast radius detected.",
       recommended_actions: ["Review live panel data", "Run a quick scan", "Check connected sources"],
       ai_source: "static-fallback",
-    },
-  });
+    }, reasoningStartedAt);
 }
 
 async function handleCommand(req, res) {
@@ -1839,6 +1877,94 @@ async function handleOrchestrate(req, res) {
     finding_count: findings.length,
     path_count: attackPaths.length,
     engine: decisionEngine,
+  });
+}
+
+function capabilityForDecision(decision) {
+  const verb = String(decision?.recommended_action?.verb || "").toLowerCase();
+  if (/identity|session|user|credential/.test(verb)) return "identity_actions";
+  if (/contain|isolate|block|quarantine|kill/.test(verb)) return "containment";
+  if (/remediat|rotate|patch|update|disable|remove/.test(verb)) return "remediation";
+  return "threat_analysis";
+}
+
+async function handleDecisionOverride(req, res, decisionId) {
+  const body = await readJson(req);
+  const reason = String(body?.reason || "").trim();
+  const alternative = body?.alternative_action && typeof body.alternative_action === "object"
+    ? body.alternative_action
+    : null;
+  if (reason.length < 5) {
+    jsonResponse(req, res, 400, { error: "An override reason of at least 5 characters is required." });
+    return;
+  }
+
+  const tenantId = req.authz?.tenant_id || "tenant-local";
+  const actor = req.authz?.user_id || "analyst";
+  const decision = (await getDecisionLog(tenantId, 200)).find((item) => item.decision_id === decisionId);
+  if (!decision) {
+    jsonResponse(req, res, 404, { error: "Decision not found." });
+    return;
+  }
+  if (decision.resolution) {
+    jsonResponse(req, res, 409, { error: "Decision has already been resolved.", decision });
+    return;
+  }
+
+  const capability = capabilityForDecision(decision);
+  const resolution = {
+    status: "overridden",
+    reason,
+    alternative_action: alternative,
+    actor,
+    resolved_at: new Date().toISOString(),
+    original_recommendation: decision.recommended_action || null,
+  };
+  const updatedDecision = await updateDecisionResolution(decisionId, resolution, tenantId);
+  if (!updatedDecision) {
+    jsonResponse(req, res, 500, { error: "Could not persist decision override." });
+    return;
+  }
+
+  const evidence = (await getEvidenceLog(tenantId, 200)).find((item) => item.decision_id === decisionId);
+  if (evidence) {
+    await updateEvidenceStatus(evidence.evidence_id, "rejected", {
+      type: "operator_override",
+      reason,
+      alternative_action: alternative,
+    }, tenantId);
+  }
+  const trust = await recordOutcome(capability, "override", actor, tenantId);
+  buildMemoryRecord({
+    findings: [],
+    decision: { ...decision, resolution },
+    outcome: "override",
+    actor,
+    tenantId,
+  });
+  logAuditEvent({
+    event_type: "aria.decision.overridden",
+    status: "success",
+    actor,
+    context: {
+      tenant_id: tenantId,
+      decision_id: decisionId,
+      evidence_id: evidence?.evidence_id || null,
+      capability,
+      reason,
+      original_recommendation: decision.recommended_action || null,
+      alternative_action: alternative,
+      trust_after: trust?.trust ?? null,
+      mode_after: trust?.mode ?? null,
+    },
+  });
+
+  jsonResponse(req, res, 200, {
+    decision: updatedDecision,
+    resolution,
+    capability,
+    trust,
+    evidence_id: evidence?.evidence_id || null,
   });
 }
 
@@ -2637,8 +2763,15 @@ async function handleAiSpmRemediate(req, res) {
         if (!classification.destructive) {
           // Non-destructive: execute immediately
           try {
-            executeAiSpmRemediation({ findingId, actionIndex: idx, actor });
-            return { step: idx, action: action.type || action.title, executor_key: classification.executorKey, status: "executed" };
+            const execution = executeAiSpmRemediation({ findingId, actionIndex: idx, actor });
+            return {
+              step: idx,
+              action: action.type || action.title,
+              executor_key: classification.executorKey,
+              status: "work_item_created",
+              enforcement_mode: "manual",
+              execution_id: execution.id,
+            };
           } catch (err) {
             return { step: idx, action: action.type || action.title, executor_key: classification.executorKey, status: "error", error: err.message };
           }
@@ -3718,7 +3851,49 @@ export async function handleAriaRequest(req, res) {
     }
 
     if (req.method === "GET" && apiPath === "/api/aria/audit-events") {
-      handleAuditEvents(req, res);
+      await handleAuditEvents(req, res);
+      return;
+    }
+
+    if (req.method === "GET" && apiPath === "/api/aria/audit-export") {
+      if (!["admin", "owner"].includes(req.authz?.role)) {
+        jsonResponse(req, res, 403, { error: "Admin or owner role required for audit export." });
+        return;
+      }
+      const query = new URL(req.url, "http://x").searchParams;
+      const decisionId = String(query.get("decision_id") || "").trim() || null;
+      const pack = await buildAuditEvidencePack({
+        tenantId: req.authz?.tenant_id,
+        decisionId,
+        limit: query.get("limit") || 1000,
+        actor: req.authz?.user_id || "operator",
+      });
+      if (!pack) {
+        jsonResponse(req, res, 404, { error: "Decision not found." });
+        return;
+      }
+      logAuditEvent({
+        event_type: "aria.audit.exported",
+        actor: req.authz?.user_id || "operator",
+        context: { tenant_id: req.authz?.tenant_id, decision_id: decisionId, digest: pack.manifest.integrity.digest },
+      });
+      jsonResponse(req, res, 200, { export: pack });
+      return;
+    }
+
+    if (req.method === "GET" && apiPath === "/api/aria/autonomous-replay") {
+      if (!["admin", "owner"].includes(req.authz?.role)) {
+        jsonResponse(req, res, 403, { error: "Admin or owner role required for response replay." });
+        return;
+      }
+      const query = new URL(req.url, "http://x").searchParams;
+      jsonResponse(req, res, 200, {
+        events: getAutonomousReplayEvents({
+          tenantId: req.authz?.tenant_id,
+          limit: query.get("limit") || 1000,
+        }),
+        replay_format: "aria.autonomous-response.v1",
+      });
       return;
     }
 
@@ -3738,7 +3913,7 @@ export async function handleAriaRequest(req, res) {
     }
 
     if (req.method === "GET" && apiPath === "/api/aria/whoami") {
-      handleWhoami(req, res);
+      await handleWhoami(req, res);
       return;
     }
 
@@ -4029,6 +4204,12 @@ export async function handleAriaRequest(req, res) {
       return;
     }
 
+    if (req.method === "POST" && /^\/api\/aria\/decisions\/[^/]+\/override$/.test(apiPath)) {
+      const decisionId = decodeURIComponent(apiPath.slice("/api/aria/decisions/".length, -"/override".length)).replace(/^\/+|\/+$/g, "");
+      await handleDecisionOverride(req, res, decisionId);
+      return;
+    }
+
     // ── Evidence ledger ────────────────────────────────────────────────────────
     if (req.method === "GET" && apiPath === "/api/aria/evidence") {
       const limit = Math.min(100, Number(new URL(req.url, "http://x").searchParams.get("limit") || "20"));
@@ -4081,7 +4262,7 @@ export async function handleAriaRequest(req, res) {
         jsonResponse(req, res, 400, { error: 'outcome must be "success", "failure", or "override"' });
         return;
       }
-      const actor = req.authz?.sub || "analyst";
+      const actor = req.authz?.user_id || "analyst";
       jsonResponse(req, res, 200, { capability, updated: await recordOutcome(capability, outcome, actor, req.authz?.tenant_id) });
       return;
     }
@@ -4292,6 +4473,11 @@ export async function handleAriaRequest(req, res) {
         total_ms: Date.now() - requestStartedAt,
         bytes: audioBytes,
       }));
+      recordVoiceMetric({
+        tts_last_upstream_headers_ms: Number(res.getHeader("X-ARIA-TTS-Upstream-Headers-Ms") || 0),
+        tts_last_first_audio_ms: firstByteAt ? firstByteAt - requestStartedAt : null,
+        tts_last_total_ms: Date.now() - requestStartedAt,
+      });
       return;
     }
 
@@ -4407,7 +4593,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
   runStartupChecks();
 
+  let runtimeStarted = false;
   function onServerListening(activePort) {
+    if (runtimeStarted) return;
+    runtimeStarted = true;
     console.log(`Aria function server listening on http://${HOST}:${activePort}`);
 
     if (!["0", "false", "no", "off"].includes(String(process.env.ARIA_VOICE_WARMUP || "true").toLowerCase())) {
@@ -4465,7 +4654,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       );
       process.exit(1);
     }
-    server.once("error", (err) => {
+    const onListening = () => {
+      server.off("error", onListenError);
+      process.env.ARIA_PORT = String(candidatePort);
+      onServerListening(candidatePort);
+    };
+    const onListenError = (err) => {
+      server.off("listening", onListening);
       if ((err.code === "EADDRINUSE" || err.code === "EPERM") && portAttempt < startPortCandidates.length - 1) {
         console.warn(`[Server] Port ${candidatePort} unavailable (${err.code}). Retrying on next port...`);
         portAttempt += 1;
@@ -4474,11 +4669,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       }
       console.error(`[Server] Failed to bind ${HOST}:${candidatePort} (${err.code || "ERROR"}): ${err.message}`);
       process.exit(1);
-    });
-    server.listen(candidatePort, HOST, () => {
-      process.env.ARIA_PORT = String(candidatePort);
-      onServerListening(candidatePort);
-    });
+    };
+    server.once("error", onListenError);
+    server.once("listening", onListening);
+    server.listen(candidatePort, HOST);
   }
 
   tryListen();

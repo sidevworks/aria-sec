@@ -2,6 +2,10 @@
 // Licensed under the Business Source License 1.1 (BSL 1.1). See LICENSE file for details.
 
 export function applySecurityHeaders(res) {
+  // Native ServerResponse always exposes setHeader. Keeping this helper tolerant
+  // of minimal response adapters also makes route handlers usable in isolated
+  // contract tests and embedded runtimes without weakening the real HTTP path.
+  if (!res || typeof res.setHeader !== "function") return;
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");

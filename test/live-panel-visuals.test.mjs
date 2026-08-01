@@ -9,24 +9,25 @@ const source = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8"
 
 test("ARIA destination panels use panel-specific living visual instruments", () => {
   [
-    "MonitoringRadarVisual",
-    "ThreatPrismVisual",
-    "VectorStarfieldVisual",
-    "TimelineTunnelVisual",
-    "IncidentTriageVisual",
-    "LogStreamVisual",
-    "SystemScanVisual",
-    "NetworkInstrument3D",
-    "BlockadePerimeterVisual",
-    "QuarantineVaultVisual",
-    "AriaCoreVisual",
-  ].forEach((componentName) => assert.match(source, new RegExp(`function ${componentName}`)));
+    "FluidFirewall",
+    "ParticleDiffusionHub",
+    "VortexLogSink",
+    "OrbitalTelemetry",
+    "NeuralNodeWeb",
+    "EventHorizonTimeline",
+    "VolumetricNebula",
+    "PerimeterDefense",
+    "UnifiedPosture",
+    "ChromaticGlitchFeed",
+    "TargetLockPerimeter",
+    "BioContainmentVault",
+  ].forEach((componentName) => assert.match(source, new RegExp(`import ${componentName} from`)));
 
   assert.match(source, /function PanelVisualStage/);
   assert.doesNotMatch(source, /<LivingDashboardRoom/);
-  assert.match(source, /ariaRadarSweep/);
-  assert.match(source, /ariaWebRotate3d/);
-  assert.match(source, /ariaParticleDiffuse/);
+  assert.match(source, /"threat-overview": <PerimeterDefense/);
+  assert.match(source, /network: <FluidFirewall/);
+  assert.match(source, /"ai-spm": <OrbitalTelemetry/);
 });
 
 test("ARIA living panels are connected to live telemetry data and controls", () => {
@@ -40,14 +41,9 @@ test("ARIA living panels are connected to live telemetry data and controls", () 
   assert.match(source, /onClick=\{\(\) => void executeAriaCommand\("Run a quick scan"\)\}/);
 });
 
-test("Network panel uses an inspectable 3D instrument instead of cosmetic tilt", () => {
-  assert.match(source, /function NetworkInstrument3D/);
-  assert.match(source, /new THREE\.Scene\(\)/);
-  assert.match(source, /new THREE\.Raycaster\(\)/);
-  assert.match(source, /selectedConnection/);
-  assert.match(source, /setSelectedConnection/);
-  assert.match(source, /networkInstrumentCanvas/);
-  assert.match(source, /NetworkInspectorPanel/);
+test("Network panel uses a dedicated living firewall instrument instead of cosmetic tilt", () => {
+  assert.match(source, /import FluidFirewall from/);
+  assert.match(source, /network: <FluidFirewall connections=\{connections\}/);
   assert.doesNotMatch(source, /onPointerMove=\{updateTilt\}/);
   assert.doesNotMatch(source, /--rx/);
   assert.doesNotMatch(source, /--ry/);
@@ -75,7 +71,7 @@ test("ARIA landing field supports scroll-driven travel between panels", () => {
 
 test("top navigation travels into sectors and clears sector state for direct panels", () => {
   assert.match(source, /const openSector = useCallback/);
-  assert.match(source, /startTravel\("sector:" \+ sectorId\)/);
+  assert.match(source, /startTravel\(`sector:\$\{sectorId\}`\)/);
   assert.match(source, /onSectorClick=\{openSector\}/);
   assert.match(source, /activeSectorRef\.current = null;\n\s+startTravel\(panelId\)/);
 });

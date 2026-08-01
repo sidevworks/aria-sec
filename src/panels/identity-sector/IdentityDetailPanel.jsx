@@ -519,14 +519,6 @@ const ACTION_META = {
   isolate_proposal: { label: "Isolate (Proposal)", tone: "danger", requiresReason: true },
 };
 
-const TONE_COLOR = {
-  primary:  "var(--cx-cyan)",
-  neutral:  "var(--cx-text-dim)",
-  warning:  "var(--cx-amber)",
-  positive: "#4ade80",
-  danger:   "var(--cx-breach)",
-};
-
 function ActionConsole({ user, onInspectResult }) {
   const [pendingAction, setPendingAction]   = useState(null);
   const [reasonInput, setReasonInput]       = useState("");
@@ -581,7 +573,7 @@ function ActionConsole({ user, onInspectResult }) {
     }
 
     const d = res.data;
-    let message = "";
+    let message;
     if (d?.enforcement_mode === "proposal_only") {
       message = `PROPOSAL ONLY — ${action} proposal created (pending approval)`;
     } else if (d?.enforcement_mode === "connector_available") {

@@ -69,6 +69,7 @@ test("context snapshot includes route, source health, risk, scan, panel and rece
       sessions: [{ id: "s-1", user: "analyst@example.com", source: "okta", risk: "medium" }],
       loading: false,
     },
+    selectedIdentity: { user_id: "u-1", email: "analyst@example.com", role: "security_admin" },
     policyChangeState: { policies: [{ id: "p-1" }], history: [{ id: "h-1", action: "update" }] },
     approvalQueue: [{ id: "approval-1", label: "Block suspicious IP", risk: "high" }],
     autonomyMode: "confirm",

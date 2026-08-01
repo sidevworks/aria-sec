@@ -25,8 +25,8 @@ const PERSIST_DIR = process.env.ARIA_PERSISTENCE_DIR;
 const TENANT = "tenant-local";
 // Trust scores are tenant-namespaced under tenants/<tenant_id>/trust-scores.json.
 const TRUST_PATH = join(PERSIST_DIR, "tenants", TENANT, "trust-scores.json");
-// auditLog.mjs writes to ./aria-memory/audit-events.json (cwd-rooted, not ARIA_PERSISTENCE_DIR).
-const AUDIT_PATH = join(process.cwd(), "aria-memory", "audit-events.json");
+// auditLog.mjs resolves its ledger from ARIA_PERSISTENCE_DIR.
+const AUDIT_PATH = join(PERSIST_DIR, "audit-events.json");
 
 function resetStore(initial = {}) {
   if (existsSync(PERSIST_DIR)) rmSync(PERSIST_DIR, { recursive: true, force: true });

@@ -17,6 +17,13 @@
 import { emit } from "./eventBus.mjs";
 import { blockIp } from "./blockedIpStore.mjs";
 import { createIncident } from "./incidentStore.mjs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { resolveLegacyMemoryDir } from "./persistenceConfig.mjs";
+
+const REPLAY_PATH = join(resolveLegacyMemoryDir(), "autonomous-response-replay.jsonl");
+const REPLAY_ARCHIVE_PATH = `${REPLAY_PATH}.1`;
+const REPLAY_MAX_BYTES = Math.max(1_000_000, Number(process.env.ARIA_AUTONOMOUS_REPLAY_MAX_BYTES || 10_000_000));
 
 // ── Velocity windows ──────────────────────────────────────────────────────────
 // Map<sourceKey, number[]> — timestamps of recent signals in ms
@@ -43,6 +50,67 @@ const THRESHOLDS = {
   // Velocity window kept for this long before pruning
   velocityRetentionMs: 60_000,
 };
+
+function replayRecord(signal) {
+  return {
+    timestamp: new Date().toISOString(),
+    type: String(signal?.type || "unknown"),
+    sourceIp: String(signal?.sourceIp || ""),
+    endpoint: String(signal?.endpoint || "unknown").slice(0, 300),
+    tenantId: String(signal?.tenantId || "tenant-local").slice(0, 64),
+    meta_keys: signal?.meta && typeof signal.meta === "object" ? Object.keys(signal.meta).slice(0, 30) : [],
+  };
+}
+
+function appendReplay(signal) {
+  try {
+    mkdirSync(dirname(REPLAY_PATH), { recursive: true });
+    if (existsSync(REPLAY_PATH) && statSync(REPLAY_PATH).size >= REPLAY_MAX_BYTES) {
+      if (existsSync(REPLAY_ARCHIVE_PATH)) renameSync(REPLAY_ARCHIVE_PATH, `${REPLAY_ARCHIVE_PATH}.${Date.now()}`);
+      renameSync(REPLAY_PATH, REPLAY_ARCHIVE_PATH);
+    }
+    appendFileSync(REPLAY_PATH, `${JSON.stringify(replayRecord(signal))}\n`, "utf8");
+  } catch {
+    // Replay persistence must never block request handling.
+  }
+}
+
+export function getAutonomousReplayEvents({ limit = 1000, tenantId = null } = {}) {
+  const max = Math.min(5000, Math.max(1, Number(limit) || 1000));
+  try {
+    return readFileSync(REPLAY_PATH, "utf8")
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .map((line) => { try { return JSON.parse(line); } catch { return null; } })
+      .filter(Boolean)
+      .filter((item) => !tenantId || item.tenantId === tenantId)
+      .slice(-max)
+      .reverse();
+  } catch {
+    return [];
+  }
+}
+
+function restoreRecentWindows() {
+  const cutoff = Date.now() - THRESHOLDS.velocityRetentionMs;
+  for (const item of getAutonomousReplayEvents({ limit: 5000 }).reverse()) {
+    const timestamp = Date.parse(item.timestamp);
+    if (!Number.isFinite(timestamp) || timestamp < cutoff || !item.sourceIp) continue;
+    const sourceKey = `${item.tenantId || "?"}:${item.sourceIp}`;
+    velocityWindows.set(sourceKey, [...(velocityWindows.get(sourceKey) || []), timestamp]);
+    if (item.type === "auth_failure") {
+      const authKey = `authfail:${sourceKey}`;
+      velocityWindows.set(authKey, [...(velocityWindows.get(authKey) || []), timestamp]);
+    }
+    if (item.endpoint && item.endpoint !== "unknown") {
+      if (!coordinatedWindows.has(item.endpoint)) coordinatedWindows.set(item.endpoint, new Map());
+      const endpointMap = coordinatedWindows.get(item.endpoint);
+      endpointMap.set(item.sourceIp, [...(endpointMap.get(item.sourceIp) || []), timestamp]);
+    }
+  }
+}
+
+restoreRecentWindows();
 
 function now() { return Date.now(); }
 
@@ -159,6 +227,7 @@ async function raiseIncident(title, severity, context, tenantId) {
 export async function feed(signal) {
   const { type, sourceIp, endpoint = "unknown", tenantId, meta = {} } = signal;
   if (!sourceIp) return;
+  appendReplay(signal);
 
   const sourceKey = `${tenantId || "?"}:${sourceIp}`;
 

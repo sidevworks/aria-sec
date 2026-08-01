@@ -11,7 +11,7 @@ import { handleAriaRequest } from "../../server/index.mjs";
 process.env.ARIA_AI_SPM_DISABLE_GH_AUTO = "1";
 
 // Seed audit store with known events before tests run.
-const MEMORY_DIR = join(process.cwd(), "aria-memory");
+const MEMORY_DIR = process.env.ARIA_PERSISTENCE_DIR || join(process.cwd(), "aria-memory");
 const AUDIT_LOG_PATH = join(MEMORY_DIR, "audit-events.json");
 
 const TENANT_A = "tenant-alpha";
@@ -49,6 +49,7 @@ writeFileSync(AUDIT_LOG_PATH, JSON.stringify(SEED_EVENTS, null, 2), "utf8");
 
 function createReq({ method = "GET", url = "/", body, headers = {} } = {}) {
   const req = new EventEmitter();
+  req.socket = { remoteAddress: "127.0.0.1" };
   req.method = method;
   req.url = url;
   req.headers = headers;

@@ -50,8 +50,8 @@ test("sessionEndpointEnabled returns true when ARIA_SESSION_SECRET is set", () =
   assert.equal(sessionEndpointEnabled(), true);
 });
 
-test("issueSessionToken returns a valid token with expected fields", () => {
-  const result = issueSessionToken({ tenant_id: "t-1", user_id: "u-1", role: "admin" });
+test("issueSessionToken returns a valid token with expected fields", async () => {
+  const result = await issueSessionToken({ tenant_id: "t-1", user_id: "u-1", role: "admin" });
   assert.ok(result.session_token, "session_token present");
   assert.equal(result.tenant_id, "t-1");
   assert.equal(result.user_id,   "u-1");
@@ -60,35 +60,35 @@ test("issueSessionToken returns a valid token with expected fields", () => {
   assert.ok(new Date(result.expires_at) > new Date(), "expires_at is in the future");
 });
 
-test("issueSessionToken normalizes unknown role to viewer", () => {
-  const result = issueSessionToken({ tenant_id: "t", user_id: "u", role: "superadmin" });
+test("issueSessionToken normalizes unknown role to viewer", async () => {
+  const result = await issueSessionToken({ tenant_id: "t", user_id: "u", role: "superadmin" });
   assert.equal(result.role, "viewer");
 });
 
-test("validateSessionToken accepts a freshly issued token", () => {
-  const { session_token } = issueSessionToken({ tenant_id: "t-2", user_id: "u-2", role: "analyst" });
-  const validation = validateSessionToken(session_token);
+test("validateSessionToken accepts a freshly issued token", async () => {
+  const { session_token } = await issueSessionToken({ tenant_id: "t-2", user_id: "u-2", role: "analyst" });
+  const validation = await validateSessionToken(session_token);
   assert.equal(validation.ok, true);
   assert.equal(validation.identity.tenant_id, "t-2");
   assert.equal(validation.identity.role, "analyst");
 });
 
-test("validateSessionToken rejects a tampered token", () => {
-  const { session_token } = issueSessionToken({ tenant_id: "t", user_id: "u", role: "admin" });
+test("validateSessionToken rejects a tampered token", async () => {
+  const { session_token } = await issueSessionToken({ tenant_id: "t", user_id: "u", role: "admin" });
   const tampered = session_token.slice(0, -4) + "xxxx";
-  const result = validateSessionToken(tampered);
+  const result = await validateSessionToken(tampered);
   assert.equal(result.ok, false);
   assert.ok(result.error, "error message present");
 });
 
-test("validateSessionToken rejects a missing/null token", () => {
-  assert.equal(validateSessionToken(null).ok, false);
-  assert.equal(validateSessionToken("").ok, false);
-  assert.equal(validateSessionToken(undefined).ok, false);
+test("validateSessionToken rejects a missing/null token", async () => {
+  assert.equal((await validateSessionToken(null)).ok, false);
+  assert.equal((await validateSessionToken("")).ok, false);
+  assert.equal((await validateSessionToken(undefined)).ok, false);
 });
 
-test("validateSessionToken rejects a malformed token", () => {
-  assert.equal(validateSessionToken("notavalidtoken").ok, false);
+test("validateSessionToken rejects a malformed token", async () => {
+  assert.equal((await validateSessionToken("notavalidtoken")).ok, false);
 });
 
 // ── POST /api/aria/session HTTP tests ──────────────────────────────────────
@@ -178,7 +178,7 @@ test("session endpoint allows bypass mode to issue any role (local dev)", async 
 });
 
 test("session endpoint exchanges a valid token for identity", async () => {
-  const { session_token } = issueSessionToken({ tenant_id: "t-exchange", user_id: "u-x", role: "viewer" });
+  const { session_token } = await issueSessionToken({ tenant_id: "t-exchange", user_id: "u-x", role: "viewer" });
   const res = await request({
     url: "/api/aria/session",
     body: { token: session_token },

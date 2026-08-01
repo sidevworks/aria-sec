@@ -235,8 +235,8 @@ test("getStoredVirusTotalApiKey returns null when no credentials", () => {
   assert.equal(getStoredVirusTotalApiKey(), null);
 });
 
-test("getElasticConnectorStatus returns connected:false when no credentials", () => {
-  const { connector } = getElasticConnectorStatus();
+test("getElasticConnectorStatus returns connected:false when no credentials", async () => {
+  const { connector } = await getElasticConnectorStatus();
   assert.equal(connector.id, "elastic");
   assert.equal(connector.connected, false);
   assert.equal(connector.elastic_url, null);

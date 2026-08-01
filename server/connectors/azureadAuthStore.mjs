@@ -4,8 +4,9 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { resolveLegacyMemoryDir } from "../persistenceConfig.mjs";
 
-const _BASE_DIR = join(process.cwd(), "aria-memory");
+const _BASE_DIR = resolveLegacyMemoryDir();
 const MEMORY_DIR = join(_BASE_DIR, "connectors");
 const STORE_PATH = join(MEMORY_DIR, "azuread.json");
 

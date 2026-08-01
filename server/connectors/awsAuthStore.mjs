@@ -22,10 +22,11 @@ import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { storeCredential, loadCredential, deleteCredential } from "./credentialVault.mjs";
+import { resolveLegacyMemoryDir } from "../persistenceConfig.mjs";
 
 // Credentials persist under the local project directory. For production,
 // callers should prefer env vars or AWS Secrets Manager.
-const _BASE_DIR = join(process.cwd(), "aria-memory");
+const _BASE_DIR = resolveLegacyMemoryDir();
 const MEMORY_DIR = join(_BASE_DIR, "connectors");
 const AWS_STORE_PATH = join(MEMORY_DIR, "aws.json");
 

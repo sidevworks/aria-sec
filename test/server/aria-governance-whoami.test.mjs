@@ -15,6 +15,7 @@ process.env.ARIA_AI_SPM_DISABLE_GH_AUTO = "1";
 
 function createReq({ method = "GET", url = "/", body, headers = {} } = {}) {
   const req = new EventEmitter();
+  req.socket = { remoteAddress: "127.0.0.1" };
   req.method = method;
   req.url = url;
   req.headers = headers;
@@ -251,7 +252,7 @@ test("whoami prefers backend session-token identity when provided", async () => 
   const previousSecret = process.env.ARIA_SESSION_SECRET;
   process.env.ARIA_SESSION_SECRET = process.env.ARIA_SESSION_SECRET || "whoami-session-test-secret";
   try {
-    const issued = issueSessionToken({ tenant_id: "tenant-session", user_id: "session-user", role: "analyst" });
+    const issued = await issueSessionToken({ tenant_id: "tenant-session", user_id: "session-user", role: "analyst" });
     const res = await request({
       url: "/api/aria/whoami",
       headers: {

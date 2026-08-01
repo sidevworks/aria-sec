@@ -1,8 +1,6 @@
 // Copyright (c) 2026 Sary Ismail. All rights reserved.
 // Licensed under the Business Source License 1.1 (BSL 1.1). See LICENSE file for details.
 
-const DEFAULT_LIMIT = 8;
-
 const SEVERITY_WEIGHT = {
   critical: 4,
   high: 3,
@@ -42,11 +40,6 @@ const number = (value, fallback = 0) => {
 const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, number(value, min)));
 
 const lower = (value) => text(value).toLowerCase();
-
-const titleCase = (value) => {
-  const raw = text(value, "unknown");
-  return raw.charAt(0).toUpperCase() + raw.slice(1);
-};
 
 const severityRank = (value) => SEVERITY_WEIGHT[lower(value)] ?? SEVERITY_WEIGHT.unknown;
 

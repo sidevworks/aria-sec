@@ -118,7 +118,7 @@ function AriaToast({ toast, color, onOpen, onArchive, onDismiss }) {
 }
 
 // ─── Notification tray (macOS-style collapsed panel) ─────────────────────────
-function AriaNotifTray({ history, onDismiss, onDismissAll, onClear }) {
+function AriaNotifTray({ history, onDismiss, onDismissAll }) {
   const [open, setOpen] = useState(false);
   const colors = { info: "#63f5ff", warning: "#ffc857", success: "#2dd4bf", error: "#ff3d81" };
   if (history.length === 0) return null;
@@ -252,7 +252,6 @@ const matchesAnyIntent = (normalized, phrases = []) =>
 
 // Only drop stale buffered audio immediately after a local route change.
 // The live voice conversation must continue speaking after that.
-const LOCAL_VOICE_AUDIO_FLUSH_MS = 450;
 const VOICE_ALERT_COOLDOWN_MS = 12_000;
 const VOICE_ALERT_MAX_CHARS = 118;
 
@@ -531,7 +530,6 @@ const ARIA_API_BASE = (() => {
   if (typeof window !== "undefined" && window.location?.protocol === "app:") return "http://127.0.0.1:5000";
   return "";
 })();
-const ARIA_DEBUG = import.meta.env.DEV && String(import.meta.env.VITE_ARIA_DEBUG || "") === "1";
 // DEMO_BUILD (from ariaBuildFlags) re-enables demo data in the otherwise-strict
 // production build. Real prod builds leave VITE_ARIA_DEMO_BUILD unset → strict.
 const STRICT_PROD_UI = !DEMO_BUILD && (import.meta.env.PROD || ["1", "true", "yes", "on", "strict"].includes(String(import.meta.env.VITE_ARIA_STRICT_PROD || "").toLowerCase()));
@@ -631,7 +629,7 @@ const demoTransportBtn = (disabled) => ({
   color: "#63f5ff", opacity: disabled ? 0.35 : 1, whiteSpace: "nowrap",
 });
 
-const splitSystemSpeechText = (text, maxLength = 240) => {
+const _splitSystemSpeechText = (text, maxLength = 240) => {
   const sentences = String(text || "")
     .replace(/\s+/g, " ")
     .trim()
@@ -1051,7 +1049,7 @@ function LiveLogMeaningPanel({ logs = [] }) {
   );
 }
 
-function PanelActionRuntime({ actionState = {}, scanHistory = [], onDownloadEvidence, onDownloadAudit }) {
+function _PanelActionRuntime({ actionState = {}, scanHistory = [], onDownloadEvidence, onDownloadAudit }) {
   const latestScan = scanHistory[0] || null;
   const busy = actionState.status === "busy";
   const statusColor = actionState.status === "error"
@@ -1990,17 +1988,15 @@ function formatBlockedIpTime(value) {
 
 function BlockedIpPanel({
   items = [],
-  connector = null,
+  connector: _connector = null,
   sources = [],
-  storedCount = 0,
+  storedCount: _storedCount = 0,
   loading = false,
   actionMessage = "",
   onRefresh,
   onBlock,
   onUnblock,
 }) {
-  const status = connector?.status || "unconfigured";
-  const connectorLabel = connector?.label || "macOS firewall blocklist";
   const connectorRows = sources.filter((source) => ["firewall-blocklist", "github", "siem-edr"].includes(source.id));
   const [ipDraft, setIpDraft] = useState("");
   const [reasonDraft, setReasonDraft] = useState("");
@@ -2467,7 +2463,7 @@ function AiSpmDashboard({
   runConnectorFirstScan,
   askNarrativeQuestion,
   stopNarrativeSpeech,
-  isRealtimeSpeaking,
+  isRealtimeSpeaking: _isRealtimeSpeaking,
   realtimeVoiceLevelRef,
   realtimeLastAudioAtRef,
 }) {
@@ -3198,7 +3194,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
   const [status, setStatus] = useState("Silent Mode");
   const [statusType, setStatusType] = useState("silent");
   const [commandText, setCommandText] = useState("");
-  const [commandDockAwake, setCommandDockAwake] = useState(true);
+  const [_commandDockAwake, setCommandDockAwake] = useState(true);
   const [commandDockFocused, setCommandDockFocused] = useState(false);
   const [commandDockVisible, setCommandDockVisible] = useState(false);
   const [panelVisible, setPanelVisible] = useState(false);
@@ -3287,7 +3283,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
   const [liveFeed, setLiveFeed] = useState([]);
   const [livePanelData, setLivePanelData] = useState(null);
   const [processActionState, setProcessActionState] = useState(null);
-  const [panelActionState, setPanelActionState] = useState({ status: "idle", message: "" });
+  const [_panelActionState, setPanelActionState] = useState({ status: "idle", message: "" });
   const [scanHistory, setScanHistory] = useState([]);
   const [monitoringContext, setMonitoringContext] = useState({});
   const [, setLastUpdated] = useState(null);
@@ -3387,8 +3383,6 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
   const voiceChatEnabledRef = useRef(localStorage.getItem("aria-voice-chat") === "true");
   const [voiceListening, setVoiceListening] = useState(false);
   const speechRecognitionRef = useRef(null);
-  const voiceUtteranceInterruptedRef = useRef(false);
-  const voiceRestartTimerRef = useRef(null);
   // ── Aria Blocklist (GET /api/blocked-ips) ────────────────────────────────────
   const [ariaBlockedIps, setAriaBlockedIps] = useState([]);
   const [ariaBlockedLoading, setAriaBlockedLoading] = useState(false);
@@ -3405,7 +3399,6 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
   const speakARIARealtimeRef = useRef(null);
   const realtimeVoiceLevelRef = useRef(0);
   const realtimeLastAudioAtRef = useRef(0);
-  const liveCommandTranscriptRef = useRef({ text: "", time: 0 });
   const realtimePlatformContextRef = useRef({});
 
   // ElevenLabs live narration session
@@ -5365,9 +5358,6 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
     return true;
   }, [setAriaState, setActiveDashPanel, setDashVisible, setTravelTargetPanelId]);
 
-  const sendRealtimeSpeech = useCallback(() => false, []);
-  const flushRealtimeSpeech = useCallback(() => true, []);
-
   const speakARIARealtime = useCallback(
     (text, { forceInDemo = false, audioSrc = null } = {}) => {
       const cleanText = (text || "").trim();
@@ -5505,7 +5495,6 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
         }
 
         const panelLabel = panelById(id)?.label || id;
-        const isVoiceSource = options?.source?.startsWith("voice");
         const navLine = `Navigating to ${panelLabel}.`;
 
         if (targetSector && activeSectorRef.current !== targetSector.id) {
@@ -5825,7 +5814,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
     narratePlayTimeRef.current = 0;
   }, [cancelLiveSpeech]);
 
-  const stopLiveVoice = useCallback(() => {
+  const _stopLiveVoice = useCallback(() => {
     setNarrateOverlayOpen(false);
     setAriaLiveLine("");
     cancelLiveSpeech();
@@ -5846,7 +5835,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
     });
   }, []);
 
-  const buildRealtimeContextToolResult = useCallback(() => (
+  const _buildRealtimeContextToolResult = useCallback(() => (
     buildRealtimePlatformContextResult({
       ...realtimePlatformContextRef.current,
       activeDashPanel: activeDashPanelRef.current ?? realtimePlatformContextRef.current?.activeDashPanel,
@@ -5874,7 +5863,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
     return data?.result || null;
   }, [buildRealtimeContextSnapshot]);
 
-  const speakExactViaLiveSession = useCallback((text) => {
+  const _speakExactViaLiveSession = useCallback((text) => {
     void ariaTTS(text, { verbatim: true });
     return true;
   }, [ariaTTS]);
@@ -9152,7 +9141,7 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
     }
   }, [emitOperatorAlert, pushLiveFeed, refreshAriaBlockedIps]);
 
-  const { connected: streamConnected } = useAriaStream(handleStreamEvent);
+  const { connected: _streamConnected } = useAriaStream(handleStreamEvent);
 
   useEffect(() => {
     const initialSnapshotTimer = setTimeout(() => {
@@ -9640,10 +9629,14 @@ export default function OrbitalSoundVisualizer({ onLogout } = {}) {
           panelId: activeDashPanel || "overview",
           context,
           model_mode: modelModeRef.current || "gemini",
+          latency_profile: "realtime",
         }),
       });
       const json = res.ok ? await res.json() : null;
       narrative = json?.narrative || null;
+      if (narrative?.latency) {
+        console.info("[Aria Voice] narrative latency", narrative.latency);
+      }
     } catch (err) {
       console.warn("[Aria] panel narrative failed:", err);
     }

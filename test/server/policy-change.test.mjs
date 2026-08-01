@@ -23,6 +23,7 @@ const POLICY_ID = "pol-rbac-viewer";
 
 function createReq({ method = "GET", url = "/", body, headers = {} } = {}) {
   const req = new EventEmitter();
+  req.socket = { remoteAddress: "127.0.0.1" };
   req.method = method;
   req.url = url;
   req.headers = headers;

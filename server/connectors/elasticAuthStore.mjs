@@ -7,9 +7,10 @@ import http from "node:http";
 import { durableGet, durableSet, durableDel, isDurable } from "../durableStore.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { resolveLegacyMemoryDir } from "../persistenceConfig.mjs";
 
 // ── Legacy file-based store (fallback when KV not configured) ─────────────────
-const _BASE_DIR = join(process.cwd(), "aria-memory");
+const _BASE_DIR = resolveLegacyMemoryDir();
 const MEMORY_DIR = join(_BASE_DIR, "connectors");
 
 function legacyStorePath(tenantId) {

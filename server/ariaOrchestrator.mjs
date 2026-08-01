@@ -409,6 +409,33 @@ export async function getDecisionLog(tenantId, limit = 20) {
   return readLog(decisionLogPath(tenantId)).slice(0, limit);
 }
 
+export async function updateDecisionResolution(decisionId, resolution, tenantId) {
+  const tenant = sanitizeTenantSegment(tenantId);
+  const id = String(decisionId || "").trim();
+  if (!id || !resolution || typeof resolution !== "object") return null;
+
+  if (isDbConfigured()) {
+    const { rows } = await query(
+      "UPDATE decisions SET payload = payload::jsonb || jsonb_build_object('resolution', $1::jsonb) WHERE decision_id = $2 AND tenant_id = $3 RETURNING payload",
+      [JSON.stringify(resolution), id, tenant],
+    );
+    return rows[0]?.payload || null;
+  }
+
+  const path = decisionLogPath(tenant);
+  const log = readLog(path);
+  const decision = log.find((item) => item.decision_id === id);
+  if (!decision) return null;
+  decision.resolution = resolution;
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, JSON.stringify(log, null, 2));
+  } catch {
+    return null;
+  }
+  return decision;
+}
+
 export async function getEvidenceLog(tenantId, limit = 20) {
   if (isDbConfigured()) {
     const { rows } = await query(

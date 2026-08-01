@@ -39,12 +39,6 @@ const NODES = [0, 60, 120, 180, 240, 300].map((deg, i) => ({
 // ════════════════════════════════════════════════════════════════════════════
 const WAV_SRC = '/aria-welcome.mp3';
 
-function playOnce(onBlocked) {
-  const audio = new Audio(WAV_SRC);
-  audio.play().catch(onBlocked ?? (() => {}));
-  return audio;
-}
-
 function triggerSystemAudio() {
   if (!WAV_SRC) return;
 

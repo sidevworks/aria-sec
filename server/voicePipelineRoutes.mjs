@@ -16,6 +16,23 @@ const MODELS_CACHE_DIR = process.env.ARIA_PERSISTENCE_DIR
 let _whisperPipeline = null;
 let _whisperLoading = false;
 let _whisperLoadError = null;
+const _voiceMetrics = {
+  stt_warmup_ms: null,
+  stt_last_inference_ms: null,
+  narrative_last_total_ms: null,
+  tts_last_upstream_headers_ms: null,
+  tts_last_first_audio_ms: null,
+  tts_last_total_ms: null,
+  updated_at: null,
+};
+
+export function recordVoiceMetric(values = {}) {
+  Object.assign(_voiceMetrics, values, { updated_at: new Date().toISOString() });
+}
+
+export function getVoiceMetrics() {
+  return { ..._voiceMetrics };
+}
 
 async function getWhisperPipeline() {
   if (_whisperPipeline) return _whisperPipeline;
@@ -32,6 +49,7 @@ async function getWhisperPipeline() {
   }
 
   _whisperLoading = true;
+  const loadStartedAt = Date.now();
   try {
     const { pipeline, env } = await import("@xenova/transformers");
     env.cacheDir = MODELS_CACHE_DIR;
@@ -40,6 +58,7 @@ async function getWhisperPipeline() {
     _whisperPipeline = await pipeline("automatic-speech-recognition", WHISPER_MODEL, {
       quantized: true,
     });
+    recordVoiceMetric({ stt_warmup_ms: Date.now() - loadStartedAt });
     console.log("[Voice] Whisper ready");
   } catch (err) {
     _whisperLoadError = err;
@@ -99,6 +118,7 @@ export async function handleVoicePipelineRoutes(req, res, apiPath, rawBody) {
 
       const text = (result.text || "").trim();
       const duration_ms = Date.now() - t0;
+      recordVoiceMetric({ stt_last_inference_ms: duration_ms });
       console.log(`[Voice STT] "${text.slice(0, 60)}" (${duration_ms}ms)`);
 
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -134,6 +154,8 @@ export async function handleVoicePipelineRoutes(req, res, apiPath, rawBody) {
       chat_model: null,
       chat_enabled: false,
       data_residency: "local",
+      warmup_enabled: !["0", "false", "no", "off"].includes(String(process.env.ARIA_VOICE_WARMUP || "true").toLowerCase()),
+      latency: getVoiceMetrics(),
     }));
     return true;
   }

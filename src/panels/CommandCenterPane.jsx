@@ -426,7 +426,7 @@ function Empty({ label }) {
   return <div style={{ fontSize:10, color:C.muted, fontStyle:"italic", padding:"6px 0" }}>{label}</div>;
 }
 
-const tabSurface = (accent = C.blue, mode = "grid") => ({
+const tabSurface = (_accent = C.blue, mode = "grid") => ({
   position: "relative",
   border: `1px solid rgba(0,122,204,0.18)`,
   borderRadius: 4,
@@ -846,7 +846,7 @@ function useHypotheses() {
     return () => { live = false; clearInterval(id); };
   }, []);
 
-  const approve = async (id, reason) => {
+  const approve = async (id, _reason) => {
     await fetch(apiUrl(`/api/hypotheses/${id}/approve`), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ approver: "operator" }) });
   };
   const deny = async (id, reason) => {
@@ -1400,7 +1400,7 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
     try {
       const r = await fetch(apiUrl("/api/scan/history"));
       if (r.ok) { const d = await r.json(); setHistory(d.scans || []); }
-    } catch (_) {}
+    } catch (_) { /* history remains at the last known snapshot */ }
   }, []);
 
   const loadSchedule = useCallback(async () => {
@@ -1417,7 +1417,7 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
           setAutoFolder(d.schedule.folderPath || "~");
         }
       }
-    } catch (_) {}
+    } catch (_) { /* schedule remains at the last known snapshot */ }
   }, []);
 
   useEffect(() => { loadHistory(); loadSchedule(); }, [loadHistory, loadSchedule, refreshTick]);
@@ -1427,7 +1427,7 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
     try {
       await fetch(apiUrl(`/api/scan/record?id=${id}`), { method: "DELETE" });
       setHistory(h => h.filter(s => s.id !== id));
-    } catch (_) {}
+    } catch (_) { /* deletion is best-effort and can be retried */ }
     setDeleting(null);
   }, []);
 
@@ -1446,7 +1446,7 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
         }),
       });
       if (r.ok) { const d = await r.json(); setSchedule(d.schedule); }
-    } catch (_) {}
+    } catch (_) { /* save failure leaves the draft intact for retry */ }
     setSaving(false);
   }, [autoOn, autoInterval, autoTarget, autoDepth, autoFolder]);
 
@@ -1454,12 +1454,10 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
     try {
       await fetch(apiUrl("/api/scan/schedule"), { method: "DELETE" });
       setSchedule(null); setAutoOn(false);
-    } catch (_) {}
+    } catch (_) { /* disable failure leaves the current schedule visible */ }
   }, []);
 
   const dl = (url, fname) => { const a=document.createElement("a"); a.href=url; a.download=fname; a.click(); };
-
-  const sevColor = sev => sev==="critical"?"#ff4040":sev==="high"?"#ffc857":sev==="medium"?"rgba(255,255,255,0.55)":"rgba(255,255,255,0.3)";
 
   return (
     <GlassCard accent={C.blue} style={{ padding:16, gridColumn:"1 / -1" }}>
@@ -1710,7 +1708,7 @@ function HistoryAutoPanel({ onViewScan, refreshTick }) {
 }
 
 // ─── Live scan panel ──────────────────────────────────────────────────────────
-function ScanEngineTab({ executeAriaCommand, onScanComplete, autoStartSignal = 0 }) {
+function ScanEngineTab({ executeAriaCommand: _executeAriaCommand, onScanComplete, autoStartSignal = 0 }) {
   const [state, setState] = useState("idle");
   const [depth, setDepth] = useState("standard");
   const [phases, setPhases] = useState([]);
@@ -2079,7 +2077,7 @@ function ScanEngineTab({ executeAriaCommand, onScanComplete, autoStartSignal = 0
           try {
             const r = await fetch(apiUrl(`/api/scan/export?id=${id}`));
             if (r.ok) { const d = await r.json(); setResult(d); setState("done"); setProgress(100); setCurPhase("Loaded from history"); if (d.devices) setDevices(d.devices); if (d.stats) setScanStats(d.stats); }
-          } catch (_) {}
+          } catch (_) { /* a failed history read leaves the current scan visible */ }
         }}
       />
     </div>
@@ -2132,7 +2130,7 @@ function CommandPalette({ input, anchorRef, onSelect, visible }) {
     : null;
 
   const [pos, setPos] = useState({ top: 0, left: 0, width: 400 });
-  const [mounted, setMounted] = useState(false);
+  const [, setMounted] = useState(false);
   useEffect(() => {
     if (visible) {
       setMounted(true);
@@ -2609,7 +2607,7 @@ function useCriticalSiren(active) {
   const stop = useCallback(() => {
     if (!playingRef.current) return;
     playingRef.current = false;
-    try { ctxRef.current?.close(); } catch(_) {}
+    try { ctxRef.current?.close(); } catch(_) { /* already closed */ }
     ctxRef.current = null;
   }, []);
 
@@ -2632,7 +2630,7 @@ function useCriticalSiren(active) {
       playingRef.current = true;
       ctxRef.current = ctx;
       sweep();
-    } catch(_) {}
+    } catch(_) { /* audio is optional and must not break the command center */ }
   }, []);
 
   useEffect(() => { if (active) { start(); } else { stop(); } return stop; }, [active, start, stop]);

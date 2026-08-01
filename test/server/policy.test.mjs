@@ -15,7 +15,7 @@ const ADMIN = { "x-tenant-id": "tenant-alpha", "x-user-id": "admin@aria.io",  "x
 const OWNER = { "x-tenant-id": "tenant-alpha", "x-user-id": "owner@aria.io",  "x-role": "owner"  };
 const VIEWER = { "x-tenant-id": "tenant-alpha", "x-user-id": "viewer@aria.io", "x-role": "viewer" };
 
-const MEMORY_DIR = join(process.cwd(), "aria-memory");
+const MEMORY_DIR = process.env.ARIA_PERSISTENCE_DIR || join(process.cwd(), "aria-memory");
 const AUDIT_PATH = join(MEMORY_DIR, "audit-events.json");
 
 function readAuditLog() {

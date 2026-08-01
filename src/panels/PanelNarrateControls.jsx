@@ -60,7 +60,7 @@ export default function PanelNarrateControls({ panelId, panelData = {}, style })
       const res = await fetch(`${ARIA_API_BASE}/api/aria/panel-narrative`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
-        body: JSON.stringify({ panelId, context: panelData || {}, model_mode: "gemini" }),
+        body: JSON.stringify({ panelId, context: panelData || {}, model_mode: "gemini", latency_profile: "realtime" }),
       });
       if (!res.ok) throw new Error(`panel-narrative ${res.status}`);
       const data = await res.json();

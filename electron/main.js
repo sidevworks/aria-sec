@@ -2,7 +2,7 @@
 // Licensed under the Business Source License 1.1 (BSL 1.1). See LICENSE file for details.
 
 import {
-  app, BrowserWindow, dialog, ipcMain, Menu, nativeImage,
+  app, BrowserWindow, ipcMain, Menu, nativeImage,
   Notification, session, shell, systemPreferences, Tray,
   protocol, net,
 } from "electron";

@@ -8,7 +8,7 @@
 // canvas, positioned via foreignObject inside the SVG map.
 // Visual language borrowed from SI DevWorks landing galaxy + cosmos-tokens.
 // ════════════════════════════════════════════════════════════════════════════
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { riskBand, RISK_BANDS } from "./identityContract.js";
 
 const TAU = Math.PI * 2;
@@ -101,13 +101,12 @@ export default function DepartmentGalaxy({ galaxy, x, y, radius, selected, onCli
   const strokeToken = RISK_BANDS[band].cssToken;
 
   // Canvas size: 2.8× the galaxy radius so halo has room to breathe
-  const size   = Math.round(radius * 2.8) * 2; // *2 for devicePixelRatio
-  const rng    = useMemo(() => mkRng(galaxy.id), [galaxy.id]);
   const COUNT  = Math.max(320, Math.min(800, radius * 14)) | 0;
   const pRef   = useRef(null); // particle array — stable across re-renders
   const canRef = useRef(null);
   const rafRef = useRef(null);
-  const tRef   = useRef(Math.random() * 100); // random phase offset per galaxy
+  const [initialPhase] = useState(() => mkRng(`${galaxy.id}:phase`)() * 100);
+  const tRef   = useRef(initialPhase); // deterministic phase offset per galaxy
 
   // ── Rebuild particles when band or size changes ──────────────────────────
   useEffect(() => {

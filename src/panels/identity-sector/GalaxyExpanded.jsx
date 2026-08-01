@@ -4,7 +4,7 @@
 // GalaxyExpanded.jsx — expanded department view with DOM-based user grid
 // Each user is a real <button> with data-identity-demo-name for reliable demo clicks.
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ariaFetch } from "../ariaFetch.js";
 import { RISK_BANDS, riskBand as getRiskBand } from "./identityContract.js";
 

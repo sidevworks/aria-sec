@@ -5,11 +5,12 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { storeCredential, loadCredential, deleteCredential } from "./credentialVault.mjs";
+import { resolveLegacyMemoryDir } from "../persistenceConfig.mjs";
 
 // Connector metadata persists under the local project directory; the raw
 // token is NEVER written to this file. Durable token storage goes through
 // credentialVault (encrypted); gh-cli tokens are re-read live from `gh`.
-const _BASE_DIR = join(process.cwd(), "aria-memory");
+const _BASE_DIR = resolveLegacyMemoryDir();
 const MEMORY_DIR = join(_BASE_DIR, "connectors");
 const GITHUB_CONNECTOR_PATH = join(MEMORY_DIR, "github.json");
 

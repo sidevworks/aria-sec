@@ -21,7 +21,8 @@ async function withTempCwd(prefix, fn) {
 test("approval denial marks decision as denied, avoids action execution, and records audit trail", async () => {
   await withTempCwd("aria-authz-deny-", async (cwd) => {
     const mod = await import(`../../server/ariaMemory.mjs?deny=${Date.now()}`);
-    const approval = mod.requestApproval({
+    const tenantId = "tenant-authz-deny";
+    const approval = await mod.requestApproval(tenantId, {
       action: "isolate_threat",
       args: { incident_id: "INC-1", scope: "edge-node" },
       reason: "critical operator check",
@@ -29,16 +30,17 @@ test("approval denial marks decision as denied, avoids action execution, and rec
       source: "operator-command",
     });
 
-    const resolution = mod.resolveApproval(approval.id, "deny");
+    const resolution = await mod.resolveApproval(tenantId, approval.id, "deny", "analyst");
     assert.equal(resolution.status, "denied");
     assert.equal(resolution.result, null);
     assert.equal(resolution.approval.status, "denied");
     assert.match(resolution.approval.resolved_at, /^\d{4}-\d{2}-\d{2}T/);
 
-    const state = mod.getAriaState();
-    assert.equal(state.approvals.length, 0);
+    const approvals = await mod.getApprovals(tenantId, { status: "pending" });
+    assert.equal(approvals.length, 0);
 
-    const interventions = readFileSync(join(cwd, "aria-memory", "human-interventions.md"), "utf8");
+    const persistenceRoot = process.env.ARIA_PERSISTENCE_DIR || join(cwd, "aria-memory");
+    const interventions = readFileSync(join(persistenceRoot, "human-interventions.md"), "utf8");
     assert.match(interventions, /Approval denied/);
     assert.match(interventions, /Denied isolate_threat\. Reason: analyst decision\./);
   });
@@ -47,7 +49,7 @@ test("approval denial marks decision as denied, avoids action execution, and rec
 test("missing approval id returns explicit missing status", async () => {
   await withTempCwd("aria-authz-missing-", async () => {
     const mod = await import(`../../server/ariaMemory.mjs?missing=${Date.now()}`);
-    const resolution = mod.resolveApproval("APR-DOES-NOT-EXIST", "deny");
+    const resolution = await mod.resolveApproval("tenant-authz-missing", "APR-DOES-NOT-EXIST", "deny", "analyst");
 
     assert.equal(resolution.status, "missing");
     assert.equal(resolution.error, "Approval item not found");

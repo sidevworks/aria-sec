@@ -21,8 +21,11 @@
     "bluetooth:registry:update": "node scripts/update-bluetooth-assigned-numbers.mjs",
     "network:vendors:update": "node scripts/update-ieee-oui-registry.mjs",
     "voice:cache": "node --env-file-if-exists=.env.local scripts/cache-whisper-model.mjs",
+    "state:backup": "node scripts/backup-state.mjs",
+    "state:restore": "node scripts/restore-state.mjs",
     "test:ai-spm": "ARIA_PERSISTENCE_DIR=./aria-memory node --test test/server/ai-spm.test.mjs",
-    "test:server": "ARIA_PERSISTENCE_DIR=./aria-memory node --test test/server/aria-server-source.test.mjs test/server/policy.test.mjs test/server/identity-routes.test.mjs"
+    "test:server": "ARIA_PERSISTENCE_DIR=./aria-memory node --test test/server/aria-server-source.test.mjs test/server/policy.test.mjs test/server/identity-routes.test.mjs",
+    "test:all": "node scripts/run-test-suite.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock": "^3.1056.0",

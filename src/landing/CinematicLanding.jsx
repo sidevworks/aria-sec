@@ -493,7 +493,10 @@ function SectorVideoBackdrop({ activeSector, travel }) {
   const src = SECTOR_VIDEOS[activeSector.id] || SECTOR_VIDEOS.cockpit;
   const videoRef = useRef(null);
   const travelRef = useRef(travel.active);
-  travelRef.current = travel.active;
+
+  useEffect(() => {
+    travelRef.current = travel.active;
+  }, [travel.active]);
 
   useEffect(() => {
     const video = videoRef.current;

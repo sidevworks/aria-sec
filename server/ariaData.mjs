@@ -47,6 +47,8 @@ export function runScan({ depth = "standard", target = "local host" } = {}) {
 
   return {
     status: "complete",
+    data_mode: "live",
+    provenance: "local-telemetry-and-policy",
     action: "run_scan",
     target,
     depth,
@@ -62,6 +64,8 @@ export function runScan({ depth = "standard", target = "local host" } = {}) {
 export function isolateThreat({ incident_id = "LIVE-REVIEW", scope = "selected entity" } = {}) {
   return {
     status: "approval_staged",
+    data_mode: "live",
+    enforcement_mode: "not-enforced",
     action: "isolate_threat",
     incident_id,
     scope,
@@ -76,6 +80,8 @@ export function generateIncidentReport({ incident_id = "LIVE-REVIEW", audience =
   const snapshot = getMonitoringSnapshot();
   return {
     status: "complete",
+    data_mode: "live",
+    provenance: "local-telemetry-and-policy",
     action: "generate_incident_report",
     incident_id,
     audience,
@@ -97,6 +103,8 @@ export async function scanLocalHostArtifacts({ roots = [], maxDepth = 5, maxEntr
   const result = await scanLocalArtifacts({ roots, maxDepth, maxEntries });
   return {
     status: "complete",
+    data_mode: "live",
+    provenance: "local-filesystem-observation",
     action: "scan_local_host_artifacts",
     generated_at: now(),
     summary: {
@@ -117,6 +125,8 @@ export function stageHostIsolation({ hostLabel = "local-host", reason = "Operato
   const plan = buildHostIsolationPlan({ hostLabel, reason });
   return {
     status: "approval_staged",
+    data_mode: "live",
+    enforcement_mode: "not-enforced",
     action: "stage_host_isolation",
     plan,
     feed: [

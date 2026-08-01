@@ -47,7 +47,7 @@ test("GET /api/aria/health returns 200 with correct shape", async () => {
   assert.equal(typeof body.timestamp, "string");
   assert.ok(body.timestamp.includes("T"), "timestamp should be ISO format");
   assert.ok(body.stores && typeof body.stores === "object", "stores must be present");
-  assert.ok(["connected", "in-memory"].includes(body.stores.kv), `stores.kv must be connected or in-memory, got ${body.stores.kv}`);
+  assert.ok(["connected", "file", "in-memory"].includes(body.stores.kv), `stores.kv must be connected, file, or in-memory, got ${body.stores.kv}`);
   assert.ok(["encrypted", "missing-key"].includes(body.stores.credentialVault), `stores.credentialVault must be encrypted or missing-key, got ${body.stores.credentialVault}`);
   assert.ok(["oauth", "headers"].includes(body.stores.auth), `stores.auth must be oauth or headers, got ${body.stores.auth}`);
   assert.ok(body.connectors && typeof body.connectors === "object", "connectors must be present");
