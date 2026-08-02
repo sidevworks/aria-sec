@@ -1,8 +1,7 @@
 name: ARIA quality gate
 
 on:
-  push:
-    branches: [main]
+  push: {}
   pull_request:
 
 permissions:
