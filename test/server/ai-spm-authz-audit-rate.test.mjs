@@ -95,7 +95,7 @@ test("tenant/authz explicit local bypass allows missing headers when enabled", a
 });
 
 test("audit persistence updates for scan, finding-action, and approval flows", async () => {
-  const memoryDir = join(process.cwd(), "aria-memory");
+  const memoryDir = process.env.ARIA_PERSISTENCE_DIR || join(process.cwd(), "aria-memory");
   const scansPath = join(memoryDir, "ai-spm-scan-history.json");
   const decisionsPath = join(memoryDir, "ai-spm-decisions.json");
   const approvalsPath = join(memoryDir, "tenants", "acme", "approval-queue.json");
