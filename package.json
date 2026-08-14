@@ -15,6 +15,7 @@
     "dist": "npm run electron:build && electron-builder",
     "server": "NODE_ENV=development ARIA_ENABLE_DEMO_LOGIN=true ARIA_PERSISTENCE_DIR=./aria-memory node --env-file-if-exists=.env.local --env-file-if-exists=../.env.local server/index.mjs",
     "build": "vite build",
+    "build:yc-demo": "VITE_ARIA_DEMO_BUILD=true VITE_ARIA_YC_DEMO=true vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "report:implementation": "node scripts/generate-implementation-report.mjs",

@@ -4,15 +4,16 @@
 
 ### Autonomous Resilience Intelligence Architecture
 
-**A voice-native, 3D spatial security operations cockpit with governed autonomy — that runs entirely on your own hardware if you want it to.**
+**A voice-native, 3D spatial security operations cockpit with governed autonomy - that runs entirely on your own hardware if you want it to.**
 
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-blue.svg)](./LICENSE)
+[![CI](https://github.com/sidevworks/aria-sec/actions/workflows/ci.yml/badge.svg)](https://github.com/sidevworks/aria-sec/actions/workflows/ci.yml)
 [![Node](https://img.shields.io/badge/Node-%E2%89%A522-339933.svg)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000.svg)](https://threejs.org)
 [![BYOK](https://img.shields.io/badge/AI-Bring%20Your%20Own%20Key-8b5cf6.svg)](#-bring-your-own-key)
 
-*Source-available for evaluation and research. Not open source — see [License](#-license).*
+*Source-available for evaluation and research. Not open source - see [License](#-license).*
 
 </div>
 
@@ -31,8 +32,8 @@ language, and proposes bounded actions that are gated by policy and written to a
 audit trail.
 
 > **Honest status:** ARIA is a working platform under active solo development, not
-> a hardened commercial product. It is genuinely functional — real connectors, real
-> local network and BLE discovery, real audit trails, a real local-model path — but
+> a hardened commercial product. It is genuinely functional - real connectors, real
+> local network and BLE discovery, real audit trails, a real local-model path - but
 > parts of it are demo-grade and labelled as such throughout this README and in the
 > product itself. Nothing here is presented as more finished than it is.
 >
@@ -41,6 +42,28 @@ audit trail.
 > line numbers, naming exactly which subsystems are production-grade and which are
 > simulated. If it disagrees with this README, believe it instead. A shorter summary
 > is in [Maturity & what is not done](#-maturity--what-is-not-done) below.
+
+### Current verified baseline
+
+The 15 August public release includes the engineering hardening completed after the
+original audit:
+
+- 48 isolated test files passing in CI, with ESLint and the production build clean.
+- A deliberately wrong recommendation can be rejected with a written reason and
+  correlated across the decision, evidence, audit, memory and Trust Ladder records.
+- Action results distinguish observed, staged and externally enforced outcomes, with
+  post-action verification rather than optimistic success reporting.
+- Tenant or decision-scoped audit evidence packs include a canonical SHA-256 digest
+  and optional HMAC-SHA256 signature.
+- Autonomous-response windows survive restart through a bounded replay log, and
+  file-backed state has verified backup and safe restore tooling.
+- The realtime narration path uses an eight-second reasoning ceiling and ElevenLabs
+  Flash streaming. Measured development-machine timings are recorded in the report.
+- GitHub Actions validates lint, all tests, the production frontend and the Docker
+  image. It contains no deployment step.
+
+The full evidence and remaining external pilot checks are in the
+[technical capability and design report](./docs/reports/ARIA-TECHNICAL-CAPABILITY-AND-DESIGN-REPORT-2026-08-02.md#35-engineering-hardening-addendum---2-august-2026).
 
 ---
 
@@ -59,7 +82,7 @@ command, or let ARIA route you automatically when a critical event fires.
 ### ⚖️ Governed Autonomy & the Trust Ladder
 
 The core idea, and the reason the rest exists. Autonomy is not a global on/off
-switch — it is **per-capability** and **earned**.
+switch - it is **per-capability** and **earned**.
 
 Four capabilities (`threat_analysis`, `remediation`, `containment`,
 `identity_actions`) each sit independently on a four-rung ladder:
@@ -72,14 +95,14 @@ Four capabilities (`threat_analysis`, `remediation`, `containment`,
 | 4 | `full_auto` | ARIA acts, and reports |
 
 Promotion requires a track record of measured outcomes. Crucially, **the model
-cannot promote itself** — a capability only climbs when an operator promotes it, and
+cannot promote itself** - a capability only climbs when an operator promotes it, and
 demotion on a bad outcome is immediate. Every promotion, demotion, approval and
 action is written to an append-only audit log with a retention envelope.
 
 ### 🎙️ Voice-Native & Interruptible
 
 Two-way spoken conversation over live data, not a chatbot bolted to a dashboard.
-Speech-to-text is **always local** (Whisper via `@xenova/transformers`) — your voice
+Speech-to-text is **always local** (Whisper via `@xenova/transformers`) - your voice
 never leaves the machine. Text-to-speech is an optional cloud call you can leave
 unconfigured.
 
@@ -96,13 +119,13 @@ docs**:
   `ARIA_LOCAL_LLM_ALLOW_REMOTE=true`.
 - `LOCAL` mode **never** silently falls back to a cloud provider, even when a cloud
   API key is sitting right there in your environment. If your local engine is down
-  you get a clearly-labelled degraded summary and the reason — not a quiet egress.
+  you get a clearly-labelled degraded summary and the reason - not a quiet egress.
 - The server binds to loopback by default and is not designed to face the internet.
 
 ### 🔌 Connectors & AI-SPM
 
 AI Security Posture Management across GitHub, AWS, Okta, Snyk, Azure AD,
-VirusTotal, and Elastic Security — inventorying AI assets, secrets, model
+VirusTotal, and Elastic Security - inventorying AI assets, secrets, model
 infrastructure, endpoints, and identity links, then mapping attack paths and blast
 radius across them. Connector credentials are encrypted at rest with AES-256-GCM.
 
@@ -117,7 +140,7 @@ devices. Active discovery is authorization-gated; passive visibility is not.
 
 ## 🚀 Quickstart
 
-**Under five minutes, no API keys required** — ARIA starts with local-only features
+**Under five minutes, no API keys required** - ARIA starts with local-only features
 and every AI provider disabled but visibly labelled as such.
 
 ### Prerequisites
@@ -130,8 +153,8 @@ and every AI provider disabled but visibly labelled as such.
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/<your-org>/aria-guardian.git
-cd aria-guardian
+git clone https://github.com/sidevworks/aria-sec.git
+cd aria-sec
 npm install
 ```
 
@@ -142,7 +165,7 @@ cp .env.example .env.local
 node scripts/generate-encryption-key.mjs --write   # AES-256-GCM key for the credential vault
 ```
 
-`.env.example` documents every variable. **All AI keys are optional** — fill in only
+`.env.example` documents every variable. **All AI keys are optional** - fill in only
 what you want. See [Bring Your Own Key](#-bring-your-own-key).
 
 ### 3. Run
@@ -173,9 +196,11 @@ password: aria
 | `npm run server` | API server only, on `:5000` |
 | `npm run dev` | Vite frontend only |
 | `npm run build` | Production frontend bundle |
+| `npm run build:yc-demo` | Reproducible YC review build with the submitted license gate |
 | `npm run dist` | Packaged desktop app (macOS `.dmg`) |
 | `npm run lint` | ESLint |
-| `npm run test:server` | Server test suite |
+| `npm run test:all` | Complete isolated test suite |
+| `npm run test:server` | Focused server test suite |
 
 ### Docker
 
@@ -184,7 +209,7 @@ export ARIA_CREDENTIAL_ENCRYPTION_KEY=$(node scripts/generate-encryption-key.mjs
 docker compose up
 ```
 
-Compose fails fast with an explanatory message if that key is unset — the image runs
+Compose fails fast with an explanatory message if that key is unset - the image runs
 with `NODE_ENV=production`, which will not silently store credentials in plaintext.
 To reach a model server running on your host rather than in a container, set
 `ARIA_LOCAL_LLM_URL=http://host.docker.internal:11434/v1`.
@@ -194,7 +219,7 @@ To reach a model server running on your host rather than in a container, set
 ## 🔑 Bring Your Own Key
 
 ARIA ships with **no keys**, has **no telemetry**, and **never proxies your traffic
-through anyone else's infrastructure**. There is no analytics SDK in this repo —
+through anyone else's infrastructure**. There is no analytics SDK in this repo -
 verify it yourself:
 
 ```bash
@@ -215,7 +240,7 @@ Four **Intelligence Modes**, switchable live from the cockpit:
 |:--|:--|:--|:--|
 | `CLOUD` | Anthropic Claude | `ANTHROPIC_API_KEY` | Yes |
 | `GEMINI` | Google Gemini | `GEMINI_API_KEY_V2` | Yes |
-| `LOCAL` | Any OpenAI-compatible local server | a running engine | **No — enforced in code** |
+| `LOCAL` | Any OpenAI-compatible local server | a running engine | **No - enforced in code** |
 | `HYBRID` | Cloud first, local failover | either | Only while cloud is reachable |
 
 The selector reflects **reality, not aspiration**: each mode is greyed out with a
@@ -231,7 +256,7 @@ ollama pull qwen3:8b
 ```
 
 That is the entire configuration. ARIA defaults to Ollama on loopback and, if you
-have not named a model, **uses the first one the server reports** — so it works with
+have not named a model, **uses the first one the server reports** - so it works with
 whatever you have already pulled. To be explicit:
 
 ```bash
@@ -240,7 +265,7 @@ ARIA_LOCAL_LLM_MODEL=qwen3:8b
 ```
 
 vLLM, LM Studio, llama.cpp's server and text-generation-webui all work through the
-same path — anything that speaks `/v1/chat/completions`.
+same path - anything that speaks `/v1/chat/completions`.
 
 ---
 
@@ -248,12 +273,12 @@ same path — anything that speaks `/v1/chat/completions`.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  Renderer — React 19 + Three.js (Electron window or browser)     │
+│  Renderer - React 19 + Three.js (Electron window or browser)     │
 │  Galaxy scene · panels · voice loop · Intelligence Mode selector │
 └───────────────────────────────┬──────────────────────────────────┘
                                 │  HTTP + WebSocket (loopback)
 ┌───────────────────────────────┴──────────────────────────────────┐
-│  Node.js server — server/index.mjs                               │
+│  Node.js server - server/index.mjs                               │
 │                                                                  │
 │  authz · quotaGuard · rateLimiter · auditLog · securityHeaders    │
 │  ariaTrust (Trust Ladder) · actionRunner · policyStore            │
@@ -272,24 +297,24 @@ same path — anything that speaks `/v1/chat/completions`.
 └────────────┘   └────────────────────┘   └──────────────────────┘
 ```
 
-**Frontend** — React 19 with Three.js via `@react-three/fiber`, `drei`, and
+**Frontend** - React 19 with Three.js via `@react-three/fiber`, `drei`, and
 `postprocessing`. Panels are lazily code-split. Vite for dev and build;
 `electron-vite` for the desktop target.
 
-**Server** — a single Node.js HTTP + WebSocket server, no framework, ~4,500 lines of
+**Server** - a single Node.js HTTP + WebSocket server, no framework, ~4,500 lines of
 routing in `server/index.mjs` delegating to 74 focused modules. Loopback-bound by
 default. Role-based authz (`owner`/`admin`/`analyst`/`viewer`) with opaque
 in-memory session tokens.
 
-**Reasoning** — one dispatcher (`callAI`) fans out to Anthropic, Gemini, or your
+**Reasoning** - one dispatcher (`callAI`) fans out to Anthropic, Gemini, or your
 local engine, with per-mode fallback policy that respects the sovereignty
 guarantee.
 
-**Persistence** — file-based JSON under `aria-memory/`, with an optional Upstash KV
+**Persistence** - file-based JSON under `aria-memory/`, with an optional Upstash KV
 mirror for durability across restarts. Deliberately boring: it is inspectable with
 `cat`, which matters for an audit trail.
 
-**Voice** — local Whisper STT (`@xenova/transformers`, runs on-device); ElevenLabs
+**Voice** - local Whisper STT (`@xenova/transformers`, runs on-device); ElevenLabs
 TTS as an optional cloud call.
 
 ---
@@ -297,7 +322,7 @@ TTS as an optional cloud call.
 ## 🧭 Maturity & what is not done
 
 Publishing an honest list is more useful than a feature grid. Known gaps, current as
-of this commit — the full module-by-module account with file paths is in
+of this commit - the full module-by-module account with file paths is in
 [ROADMAP_AND_LIMITATIONS.md](./ROADMAP_AND_LIMITATIONS.md):
 
 | Area | Status |
@@ -305,15 +330,15 @@ of this commit — the full module-by-module account with file paths is in
 | **Network scan depth** | ARP-table reads and BLE scanning are real; "deep scan" is not a full active port/vuln scan. Phase naming is being made literal. |
 | **Local TTS** | Speech-to-text is local; text-to-speech is still a cloud call, so `LOCAL` mode is sovereign for *reasoning* but not for *speech output*. Piper/Kokoro is the intended fix. |
 | **Semantic memory** | Keyword search, not vector search. Fine at current scale. |
-| **Multi-tenancy** | Tenant IDs flow through the system but isolation is **not** enforced on every store. Single-tenant desktop use only today. |
-| **Approval queue** | File-backed; does not survive across multiple server instances. |
+| **Multi-tenancy** | Trust and the hardened governance paths are tenant-scoped, but legacy stores do not yet use one uniform repository abstraction. Single-site desktop deployment remains the supported model. |
+| **Approval queue** | File-backed and restart-safe for a single local service, but not coordinated across multiple server instances. |
 | **Audit log rotation** | Capped per file with a retention envelope; rotation is not yet implemented. |
 | **Rate limiting** | Legacy in-memory limiter still present alongside the newer `quotaGuard`. |
-| **CI/CD** | Manual shell scripts. No pipeline in this repo. |
-| **Lint** | 45 pre-existing ESLint errors, mostly unused vars in two large components. `npm run build` is clean. |
+| **CI/CD** | GitHub Actions runs lint, all tests, the production build and a Docker image build. Releases and deployments remain deliberately manual. |
+| **Lint and tests** | ESLint has no errors and all 48 isolated test files pass in the current release gate. |
 | **Compliance** | No SOC 2, no formal privacy policy or IR plan yet. |
 
-Security reports are welcome — please open a private advisory rather than a public
+Security reports are welcome - please open a private advisory rather than a public
 issue.
 
 ---
@@ -321,7 +346,7 @@ issue.
 ## 📁 Repository layout
 
 ```
-server/               Node.js API — routing, autonomy, connectors, intelligence
+server/               Node.js API - routing, autonomy, connectors, intelligence
   ariaTrust.mjs         Trust Ladder: scoring, promotion, demotion
   localLlm.mjs          Sovereign local LLM client + egress guard
   auditLog.mjs          Append-only audit trail with retention
@@ -338,15 +363,18 @@ scripts/              Launchers, registry updaters, key generation
 infra/trial-form/     AWS SAM reference stack for the landing page's forms
 docs/                 Capability reference and API documentation
 test/                 Node test-runner suites
+.github/workflows/    Non-deploying quality and container CI
 
-ROADMAP_AND_LIMITATIONS.md   Full engineering audit — read this before evaluating
+ROADMAP_AND_LIMITATIONS.md   Full engineering audit - read this before evaluating
+docs/reports/ARIA-TECHNICAL-CAPABILITY-AND-DESIGN-REPORT-2026-08-02.md
+                             Current technical assessment and hardening evidence
 ```
 
 ---
 
 ## 📄 License
 
-**Business Source License 1.1** — source-available, not open source.
+**Business Source License 1.1** - source-available, not open source.
 
 - ✅ **Permitted without a fee:** development, testing, evaluation, security and
   academic research, personal sandbox use, internal demonstration.
