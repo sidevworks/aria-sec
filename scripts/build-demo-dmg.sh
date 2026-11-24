@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 Sary Ismail. Business Source License 1.1; see LICENSE.
+# SPDX-License-Identifier: BUSL-1.1
 # Build the signed + notarized ARIA investor demo .dmg.
 #
 #   ./scripts/build-demo-dmg.sh

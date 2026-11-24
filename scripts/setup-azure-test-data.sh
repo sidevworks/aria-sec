@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 Sary Ismail. Business Source License 1.1; see LICENSE.
+# SPDX-License-Identifier: BUSL-1.1
 # ═══════════════════════════════════════════════════════════════════════════
 #  ARIA · Azure AD Test Data Setup
 #  Provisions all 4 connector finding scenarios + the connector app itself.

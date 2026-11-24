@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Sary Ismail. Business Source License 1.1; see LICENSE.
+// SPDX-License-Identifier: BUSL-1.1
 import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
